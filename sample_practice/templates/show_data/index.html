@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Show Data</title>
+	<meta charset="UTF-8">
+	
+<!--===============================================================================================-->
+</head>
+<body>
+
+<!-- Main Form -->
+
+	
+
+
+      
+      <hr/>
+      {%- for users in get_flashed_messages() %}
+         {{ users }}
+      {%- endfor %}
+		
+      
+      
+      <table>
+         <thead>
+            <tr>
+               <th>sno</th>
+               <th>name</th>
+               <th>email</th>
+               <th>sub</th>
+               <th>message</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            {% for user in users %}
+               <tr>
+                  <td>{{ user.sno }}</td>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.sub }}</td>
+                  <td>{{ user.msg }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+<!--===============================================================================================-->
+
+</body>
+</html>
