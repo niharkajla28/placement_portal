@@ -9,7 +9,7 @@
 <a href="{{url_for('login')}}">Login Page</a><br>
 <form method="POST" action="">
     {{form.hidden_tag()}}
-    {{form.username}}
+    {{form.username(class="input1" type="text" name="username" placeholder="Username")}}
     {{form.password}}
     {{form.submit}}
 </form>

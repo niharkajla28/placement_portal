@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField, EmailField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from http import HTTPStatus
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -32,25 +33,29 @@ class User(db.Model, UserMixin):
 
 
 class RegisterForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=4, max=30)], render_kw={"placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
+    username = StringField(validators=[InputRequired(), Length(min=4, max=30)])
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    # confirm = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
     submit = SubmitField("Register")
 
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(username=username.data).first()
         if existing_user_username:
+            # flash("Username already present")
             raise ValidationError("That username already exists. Please choose a different one.")
 
 
 class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=4, max=30)], render_kw={"placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Password"})
+    username = StringField(validators=[InputRequired(), Length(min=4, max=30)])
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
     submit = SubmitField("Login")
 
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(username=username.data).first()
         if existing_user_username is None:
+            print("Validation error")
             raise ValidationError("That username does not exists. Please register one.")
+
 
 
 @app.route('/')
@@ -66,27 +71,39 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
-                return redirect(url_for('dashboard'))
+                if user.admin:
+                    return redirect(url_for('dashboard_admin'))
+                else:
+                    return redirect(url_for('dashboard_student'))
 
-    return render_template('login.html', form=form)
+    return render_template('new_login.html', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        print(form.username.data)
+        # form.username.errors.append('the error message')
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data, password=hashed_password, admin=False)
         db.session.add(new_user)
         db.session.commit()
+
         return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    return render_template('new_register.html', form=form)
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard_student', methods=['GET', 'POST'])
 @login_required
-def dashboard():
-    return render_template('dashboard.html')
+def dashboard_student():
+    return render_template('dashboard_student.html')
+
+
+@app.route('/dashboard_admin', methods=['GET', 'POST'])
+@login_required
+def dashboard_admin():
+    return render_template('dashboard_admin.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -95,6 +112,9 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    return render_template('test.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
