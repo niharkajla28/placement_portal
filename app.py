@@ -60,7 +60,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,11 +72,11 @@ def login():
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 if user.admin:
-                    return redirect(url_for('dashboard_admin'))
+                    return redirect(url_for('home'))
                 else:
-                    return redirect(url_for('dashboard_student'))
+                    return redirect(url_for('home'))
 
-    return render_template('new_login.html', form=form)
+    return render_template('login.html', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -91,7 +91,7 @@ def register():
         db.session.commit()
 
         return redirect(url_for('login'))
-    return render_template('new_register.html', form=form)
+    return render_template('register.html', form=form)
 
 
 @app.route('/dashboard_student', methods=['GET', 'POST'])
