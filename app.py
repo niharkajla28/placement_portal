@@ -72,9 +72,9 @@ def login():
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 if user.admin:
-                    return redirect(url_for('home'))
+                    return redirect(url_for('dashboard_admin'))
                 else:
-                    return redirect(url_for('home'))
+                    return redirect(url_for('dashboard_student'))
 
     return render_template('login.html', form=form)
 
@@ -110,7 +110,7 @@ def dashboard_admin():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
