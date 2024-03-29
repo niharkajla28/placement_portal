@@ -32,6 +32,37 @@ class User(db.Model, UserMixin):
     admin = db.Column(db.Boolean, default=False, nullable=False)
 
 
+class Student_info(db.Model, UserMixin):
+    __tablename__ = "student_table"
+    sid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=True)
+    college_id = db.Column(db.String(11), nullable=True)
+    addr = db.Column(db.String(300), nullable=True)
+    mobile_no = db.Column(db.String(11), nullable=True)
+    email_1 = db.Column(db.String(100), nullable=True)
+    email_2 = db.Column(db.String(100), nullable=True)
+    guardian_name = db.Column(db.String(100), nullable=True)
+    gender = db.Column(db.String(10), nullable=True)
+    category = db.Column(db.String(50), nullable=True)
+    dob = db.Column(db.Date, nullable=True)
+    pwd = db.Column(db.Boolean, nullable=True)
+    blood_group = db.Column(db.String(5), nullable=True)
+    marks_10 = db.Column(db.String(10), nullable=True)
+    marks_12 = db.Column(db.String(10), nullable=True)
+    program = db.Column(db.String(5), nullable=True)
+    degree = db.Column(db.String(10), nullable=True)
+    degree_type = db.Column(db.String(50), nullable=True)
+    dept = db.Column(db.String(200), nullable=True)
+    special_dept = db.Column(db.String(200), nullable=True)
+    cgpa_1 = db.Column(db.String(5), nullable=True)
+    cgpa_2 = db.Column(db.String(5), nullable=True)
+    cgpa_3 = db.Column(db.String(5), nullable=True)
+    cgpa_4 = db.Column(db.String(5), nullable=True)
+
+
+
+
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=30)])
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
@@ -89,8 +120,10 @@ def register():
         new_user = User(username=form.username.data, password=hashed_password, admin=False)
         db.session.add(new_user)
         db.session.commit()
-
-        return redirect(url_for('login'))
+        new_student = Student_info(username=form.username.data)
+        db.session.add(new_student)
+        db.session.commit()
+        return redirect(url_for('home'))
     return render_template('register.html', form=form)
 
 
