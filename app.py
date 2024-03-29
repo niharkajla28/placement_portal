@@ -2,12 +2,13 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField, EmailField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
+from wtforms import EmailField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from http import HTTPStatus
 
-
+logged_in_user = list()
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/placement_portal"
@@ -88,6 +89,40 @@ class LoginForm(FlaskForm):
             raise ValidationError("That username does not exists. Please register one.")
 
 
+class StudentInfoForm(FlaskForm):
+    name = StringField(validators=[InputRequired(), Length(max=100)])
+    college_id = StringField(validators=[InputRequired(), Length(max=11)])
+    addr = StringField(validators=[InputRequired(), Length(max=11)])
+    mobile_no = StringField(validators=[InputRequired(), Length(max=10)])
+    email_1 = EmailField(validators=[InputRequired(), Length(max=100)])
+    email_2 = EmailField(validators=[InputRequired(), Length(max=100)])
+    guardian_name = StringField(validators=[InputRequired(), Length(max=100)])
+    gender = StringField(validators=[InputRequired(), Length(max=10)])
+    category = StringField(validators=[InputRequired(), Length(max=50)])
+    dob = DateField(validators=[InputRequired()], format='%Y-%m-%d')
+    pwd = BooleanField(validators=[InputRequired()])
+    blood_group = StringField(validators=[InputRequired(), Length(max=5)])
+    marks_10 = StringField(validators=[InputRequired(), Length(max=10)])
+    marks_12 = StringField(validators=[InputRequired(), Length(max=10)])
+    program = StringField(validators=[InputRequired(), Length(max=5)])
+    degree = StringField(validators=[InputRequired(), Length(max=10)])
+    degree_type = StringField(validators=[InputRequired(), Length(max=50)])
+    dept = StringField(validators=[InputRequired(), Length(max=200)])
+    special_dept = StringField(validators=[InputRequired(), Length(max=200)])
+    cgpa_1 = StringField(default="", validators=[Length(max=5)])
+    cgpa_2 = StringField(default="", validators=[Length(max=5)])
+    cgpa_3 = StringField(default="", validators=[Length(max=5)])
+    cgpa_4 = StringField(default="", validators=[Length(max=5)])
+
+    submit = SubmitField("Submit")
+
+    def validate_username(self, username):
+        existing_user_username = User.query.filter_by(username=username.data).first()
+        if existing_user_username:
+            # flash("Username already present")
+            raise ValidationError("That username already exists. Please choose a different one.")
+
+
 
 @app.route('/')
 def home():
@@ -97,14 +132,17 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    logged_in_user.clear()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 if user.admin:
+                    logged_in_user.append(user.username)
                     return redirect(url_for('dashboard_admin'))
                 else:
+                    logged_in_user.append(user.username)
                     return redirect(url_for('dashboard_student'))
 
     return render_template('login.html', form=form)
@@ -130,19 +168,46 @@ def register():
 @app.route('/dashboard_student', methods=['GET', 'POST'])
 @login_required
 def dashboard_student():
-    return render_template('dashboard_student.html')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        return render_template('dashboard_student.html')
 
+
+@app.route('/dashboard_student/student_profile', methods=['GET', 'POST'])
+@login_required
+def student_profile():
+    form = StudentInfoForm()
+    if form.validate_on_submit():
+        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+        print(student.username)
+        print(student.name)
+        # form.username.errors.append('the error message')
+        # load_user()
+        #
+        # new_student = Student_info(username=form.username.data)
+        # db.session.add(new_student)
+        # db.session.commit()
+        # return redirect(url_for('home'))
+    return render_template('dashboard_student_info.html', form=form)
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
 @login_required
 def dashboard_admin():
-    return render_template('dashboard_admin.html')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return render_template('dashboard_admin.html')
+    else:
+        return redirect(url_for('logout'))
+
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
+    logged_in_user.clear()
     return redirect(url_for('home'))
 
 @app.route('/test', methods=['GET', 'POST'])

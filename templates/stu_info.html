@@ -40,8 +40,8 @@
                                 {{ form.csrf_token }}
 
                                     <div class="form-group">
-                                        Username:
-                                        {{form.username(placeholder="Username" ,class="form-control form-control-user", id="username")  }}
+
+                                        {{ form.username(placeholder="Username" ,class="form-control form-control-user", id="username")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
