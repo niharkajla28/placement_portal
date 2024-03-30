@@ -62,6 +62,23 @@ class Student_info(db.Model, UserMixin):
     cgpa_4 = db.Column(db.String(5), nullable=True)
 
 
+class Company(db.Model, UserMixin):
+    __tablename__ = "company"
+    cno = db.Column(db.Integer, primary_key=True)
+    company_name = db.Column(db.String(200), nullable=True)
+    website_link = db.Column(db.String(500), nullable=True)
+    profile = db.Column(db.String(200), nullable=True)
+    cgpa = db.Column(db.String(5), nullable=True)
+    marks_10 = db.Column(db.String(5), nullable=True)
+    marks_12 = db.Column(db.String(5), nullable=True)
+    backlogs = db.Column(db.String(5), nullable=True)
+    ctc = db.Column(db.String(20), nullable=True)
+    offer_type = db.Column(db.String(50), nullable=True)
+    stipend = db.Column(db.String(20), nullable=True)
+    duration = db.Column(db.String(20), nullable=True)
+    location = db.Column(db.String(200), nullable=True)
+    start_date = db.Column(db.String(100), nullable=True)
+    ppo = db.Column(db.Boolean, nullable=True)
 
 
 class RegisterForm(FlaskForm):
@@ -117,7 +134,24 @@ class StudentInfoForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+class AddNewCompany(FlaskForm):
 
+    company_name = StringField(validators=[Length(max=200)])
+    website_link = StringField(validators=[Length(max=500)])
+    profile = StringField(validators=[Length(max=200)])
+    cgpa = StringField(validators=[Length(max=5)])
+    marks_10 = StringField(validators=[Length(max=5)])
+    marks_12 = StringField(validators=[Length(max=5)])
+    backlogs = StringField(validators=[Length(max=5)])
+    ctc = StringField(validators=[Length(max=20)])
+    offer_type = StringField(validators=[Length(max=50)])
+    stipend = StringField(validators=[Length(max=20)])
+    duration = StringField(validators=[Length(max=20)])
+    location = StringField(validators=[Length(max=200)])
+    start_date = StringField(validators=[Length(max=100)])
+    ppo = BooleanField()
+
+    submit = SubmitField("Submit")
 
 
 
@@ -229,6 +263,39 @@ def dashboard_admin():
     else:
         return redirect(url_for('logout'))
 
+
+@app.route('/dashboard_admin/add_company', methods=['GET', 'POST'])
+@login_required
+def add_company():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        form = AddNewCompany()
+        print(f'User name: {logged_in_user[0]}')
+        if form.validate_on_submit():
+
+            company = Company()
+            company.company_name = form.company_name.data
+            company.website_link = form.website_link.data
+            company.profile = form.profile.data
+            company.cgpa = form.cgpa.data
+            company.marks_10 = form.marks_10.data
+            company.marks_12 = form.marks_12.data
+            company.backlogs = form.backlogs.data
+            company.ctc = form.ctc.data
+            company.offer_type = form.offer_type.data
+            company.stipend = form.stipend.data
+            company.duration = form.duration.data
+            company.location = form.location.data
+            company.start_date = form.start_date.data
+            company.ppo = form.ppo.data
+            db.session.add(company)
+            db.session.commit()
+            print("Database commit Success")
+
+            return redirect(url_for('dashboard_admin'))
+        return render_template('dashboard_admin_company_reg.html', form=form)
 
 
 @app.route('/logout', methods=['GET', 'POST'])

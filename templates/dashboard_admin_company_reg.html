@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Student - Dashboard</title>
+    <title>Admin - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{url_for('static', filename='vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -35,7 +35,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Placement Portal</div>
             </a>
 
             <!-- Divider -->
@@ -56,9 +56,9 @@
                 Interface
             </div>
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('student_profile')}}">
+                <a class="nav-link" href="{{url_for('add_company')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Student Profile</span></a>
+                    <span>Company Registration</span></a>
             </li>
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
@@ -384,14 +384,14 @@
                     <div class="col-lg-7">
                         <div class="p-5">
                             <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Student Information</h1>
+                                <h1 class="h4 text-gray-900 mb-4">Add Company</h1>
                             </div>
                             <form class="user" action="" method="POST">
                                 {{ form.csrf_token }}
 
                                     <div class="form-group">
-                                        Name:
-                                        {{ form.name(placeholder="Name" ,class="form-control form-control-user", id="name")  }}
+                                        Company Name:
+                                        {{ form.company_name(placeholder="Company Name" ,class="form-control form-control-user", id="company_name")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -399,8 +399,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        College ID:
-                                        {{ form.college_id(placeholder="College ID" ,class="form-control form-control-user", id="college_id")  }}
+                                        Website Link:
+                                        {{ form.website_link(placeholder="Company Website link" ,class="form-control form-control-user", id="website_link")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -408,8 +408,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Residential Address:
-                                        {{ form.addr(placeholder="Address" ,class="form-control form-control-user", id="adds")  }}
+                                        Job Profile:
+                                        {{ form.profile(placeholder="Job Profile" ,class="form-control form-control-user", id="profile")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -417,8 +417,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Contact Number:
-                                        {{ form.mobile_no(placeholder="Mobile Number without +91" ,class="form-control form-control-user", id="mobile_no")  }}
+                                        Minimum 10th Percentage:
+                                        {{ form.marks_10(placeholder="Minimum 10th Percentage" ,class="form-control form-control-user", id="marks_10")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -426,8 +426,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Primary Email ID:
-                                        {{ form.email_1(placeholder="Primary Email ID" ,class="form-control form-control-user", id="email_1")  }}
+                                        Minimum 12th Percentage:
+                                        {{ form.marks_12(placeholder="Minimum 12th Percentage" ,class="form-control form-control-user", id="marks_12")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -435,8 +435,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Secondary Email ID
-                                        {{ form.email_2(placeholder="Secondary Email ID" ,class="form-control form-control-user", id="email_id")  }}
+                                        Minimum CGPA:
+                                        {{ form.cgpa(placeholder="Minimum CGPA" ,class="form-control form-control-user", id="cgpa")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -444,8 +444,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Guardian's name:
-                                        {{ form.guardian_name(placeholder="Guardian Name" ,class="form-control form-control-user", id="guardian_name")  }}
+                                        Number of Backlogs:
+                                        {{ form.backlogs(placeholder="Number of Backlogs" ,class="form-control form-control-user", id="backlogs")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -453,8 +453,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Gender:
-                                        {{ form.gender(placeholder="Gender" ,class="form-control form-control-user", id="gender")  }}
+                                        CTC being offered:
+                                        {{ form.ctc(placeholder="CTC" ,class="form-control form-control-user", id="ctc")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -462,8 +462,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Category:
-                                        {{ form.category(placeholder="Category" ,class="form-control form-control-user", id="category")  }}
+                                        Internship/Placement Offer type:
+                                        {{ form.offer_type(placeholder="I/P/I+P" ,class="form-control form-control-user", id="offer_type")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -471,8 +471,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Date of Birth(YY-MM-DD):
-                                        {{ form.dob(placeholder="Date of birth in format YY-MM-DD" ,class="form-control form-control-user", id="dob")  }}
+                                        Stipend:
+                                        {{ form.stipend(placeholder="Stipend" ,class="form-control form-control-user", id="stipend")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -480,8 +480,8 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Physically Disabled
-                                        {{ form.pwd(placeholder="True/False" ,class="form-control form-control-user", id="pwd")  }}
+                                        Duration in months:
+                                        {{ form.duration(placeholder="Duration in months" ,class="form-control form-control-user", id="duration")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -489,8 +489,17 @@
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
-                                        Blood Group
-                                        {{ form.blood_group(placeholder="Blood Group" ,class="form-control form-control-user", id="blood_group")  }}
+                                        Company Location
+                                        {{ form.location(placeholder="Company Location" ,class="form-control form-control-user", id="location")  }}
+                                         {% for field, errors in form.errors.items() %}
+                                             <small class="form-text text-muted ">
+                                                {{ ', '.join(errors) }}
+                                            </small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        Start date/Month of Internship/Placement:
+                                        {{ form.start_date(placeholder="Start date/Month of Internship/Placement" ,class="form-control form-control-user", id="start_Date")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -498,104 +507,15 @@
                                         {% endfor %}
                                     </div>
                                 <div class="form-group">
-                                        10th Percentage
-                                        {{ form.marks_10(placeholder="10th Percentage" ,class="form-control form-control-user", id="marks_10")  }}
+                                        PPO(Yes/No)
+                                        {{ form.ppo(placeholder="Yes/No" ,class="form-control form-control-user", id="ppo")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
                                             </small>
                                         {% endfor %}
                                     </div>
-                                    <div class="form-group">
-                                        12th Percentage
-                                        {{ form.marks_10(placeholder="12th Percentage" ,class="form-control form-control-user", id="marks_12")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Program:
-                                        {{ form.program(placeholder="PG/UG" ,class="form-control form-control-user", id="program")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Degree:
-                                        {{ form.degree(placeholder="M.Tech/B.Tech" ,class="form-control form-control-user", id="degree")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Degree Type:
-                                        {{ form.degree_type(placeholder="Degree Type" ,class="form-control form-control-user", id="degree_type")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Department:
-                                        {{ form.dept(placeholder="Department" ,class="form-control form-control-user", id="dept")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Specialization:
-                                        {{ form.special_dept(placeholder="Specialization" ,class="form-control form-control-user", id="special_dpt")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Sem 1 CGPA:
-                                        {{ form.cgpa_1(placeholder="Sem 1 CGPA" ,class="form-control form-control-user", id="cgpa_1")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Sem 2 CGPA:
-                                        {{ form.cgpa_2(placeholder="Sem 2 CGPA" ,class="form-control form-control-user", id="cgpa_2")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Sem 3 CGPA:
-                                        {{ form.cgpa_3(placeholder="Sem 3 CGPA" ,class="form-control form-control-user", id="cgpa_3")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="form-group">
-                                        Sem 4 CGPA:
-                                        {{ form.cgpa_4(placeholder="Sem 4 CGPA" ,class="form-control form-control-user", id="cgpa_4")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
-                                    </div>
+
 
 
                                 {{ form.submit(class="btn btn-primary btn-user btn-block")  }}
