@@ -180,7 +180,8 @@ def student_profile():
         return redirect(url_for('logout'))
     else:
         print("Just before form execution")
-        form = StudentInfoForm()
+        pre_populate = Student_info.query.filter_by(username=logged_in_user[0]).first()
+        form = StudentInfoForm(obj=pre_populate)
         print("After form")
         print(f'User name: {logged_in_user[0]}')
         if form.validate_on_submit():
@@ -214,14 +215,10 @@ def student_profile():
             db.session.add(student)
             db.session.commit()
             print("Database commit Success")
-            # form.username.errors.append('the error message')
-            # load_user()
-            #
-            # new_student = Student_info(username=form.username.data)
-            # db.session.add(new_student)
-            # db.session.commit()
+
             return redirect(url_for('dashboard_student'))
         return render_template('dashboard_student_info.html', form=form)
+
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
 @login_required
