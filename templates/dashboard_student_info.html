@@ -450,7 +450,7 @@
                                     </div>
                                     <div class="form-group">
                                         Gender:
-                                        {{ form.gender(placeholder="Secondary Email ID" ,class="form-control form-control-user", id="gender")  }}
+                                        {{ form.gender(placeholder="Gender" ,class="form-control form-control-user", id="gender")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -459,7 +459,7 @@
                                     </div>
                                     <div class="form-group">
                                         Category:
-                                        {{ form.category(placeholder="Secondary Email ID" ,class="form-control form-control-user", id="category")  }}
+                                        {{ form.category(placeholder="Category" ,class="form-control form-control-user", id="category")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -486,7 +486,7 @@
                                     </div>
                                     <div class="form-group">
                                         Blood Group
-                                        {{ form.blood_group(placeholder="Secondary Email ID" ,class="form-control form-control-user", id="blood_group")  }}
+                                        {{ form.blood_group(placeholder="Blood Group" ,class="form-control form-control-user", id="blood_group")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}

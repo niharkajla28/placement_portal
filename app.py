@@ -90,37 +90,34 @@ class LoginForm(FlaskForm):
 
 
 class StudentInfoForm(FlaskForm):
-    name = StringField(validators=[InputRequired(), Length(max=100)])
-    college_id = StringField(validators=[InputRequired(), Length(max=11)])
-    addr = StringField(validators=[InputRequired(), Length(max=11)])
-    mobile_no = StringField(validators=[InputRequired(), Length(max=10)])
-    email_1 = EmailField(validators=[InputRequired(), Length(max=100)])
-    email_2 = EmailField(validators=[InputRequired(), Length(max=100)])
-    guardian_name = StringField(validators=[InputRequired(), Length(max=100)])
-    gender = StringField(validators=[InputRequired(), Length(max=10)])
-    category = StringField(validators=[InputRequired(), Length(max=50)])
-    dob = DateField(validators=[InputRequired()], format='%Y-%m-%d')
-    pwd = BooleanField(validators=[InputRequired()])
-    blood_group = StringField(validators=[InputRequired(), Length(max=5)])
-    marks_10 = StringField(validators=[InputRequired(), Length(max=10)])
-    marks_12 = StringField(validators=[InputRequired(), Length(max=10)])
-    program = StringField(validators=[InputRequired(), Length(max=5)])
-    degree = StringField(validators=[InputRequired(), Length(max=10)])
-    degree_type = StringField(validators=[InputRequired(), Length(max=50)])
-    dept = StringField(validators=[InputRequired(), Length(max=200)])
-    special_dept = StringField(validators=[InputRequired(), Length(max=200)])
-    cgpa_1 = StringField(default="", validators=[Length(max=5)])
-    cgpa_2 = StringField(default="", validators=[Length(max=5)])
-    cgpa_3 = StringField(default="", validators=[Length(max=5)])
-    cgpa_4 = StringField(default="", validators=[Length(max=5)])
+    name = StringField(validators=[Length(max=100)])
+    college_id = StringField(validators=[Length(max=11)])
+    addr = StringField(validators=[Length(max=500)])
+    mobile_no = StringField(validators=[Length(max=10)])
+    email_1 = EmailField(validators=[Length(max=100)])
+    email_2 = EmailField(validators=[Length(max=100)])
+    guardian_name = StringField(validators=[Length(max=100)])
+    gender = StringField(validators=[Length(max=10)])
+    category = StringField(validators=[Length(max=50)])
+    dob = DateField(format='%Y-%m-%d')
+    pwd = BooleanField(default=False)
+    blood_group = StringField(validators=[Length(max=5)])
+    marks_10 = StringField(validators=[Length(max=10)])
+    marks_12 = StringField(validators=[Length(max=10)])
+    program = StringField(validators=[Length(max=5)])
+    degree = StringField(validators=[Length(max=10)])
+    degree_type = StringField(validators=[Length(max=50)])
+    dept = StringField(validators=[Length(max=200)])
+    special_dept = StringField(validators=[Length(max=200)])
+    cgpa_1 = StringField(validators=[Length(max=5)])
+    cgpa_2 = StringField(validators=[Length(max=5)])
+    cgpa_3 = StringField(validators=[Length(max=5)])
+    cgpa_4 = StringField(validators=[Length(max=5)])
 
     submit = SubmitField("Submit")
 
-    def validate_username(self, username):
-        existing_user_username = User.query.filter_by(username=username.data).first()
-        if existing_user_username:
-            # flash("Username already present")
-            raise ValidationError("That username already exists. Please choose a different one.")
+
+
 
 
 
@@ -178,19 +175,53 @@ def dashboard_student():
 @app.route('/dashboard_student/student_profile', methods=['GET', 'POST'])
 @login_required
 def student_profile():
-    form = StudentInfoForm()
-    if form.validate_on_submit():
-        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
-        print(student.username)
-        print(student.name)
-        # form.username.errors.append('the error message')
-        # load_user()
-        #
-        # new_student = Student_info(username=form.username.data)
-        # db.session.add(new_student)
-        # db.session.commit()
-        # return redirect(url_for('home'))
-    return render_template('dashboard_student_info.html', form=form)
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print("Just before form execution")
+        form = StudentInfoForm()
+        print("After form")
+        print(f'User name: {logged_in_user[0]}')
+        if form.validate_on_submit():
+            print("Inside validation after submit")
+            student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+            print(student.username)
+
+            student.name = form.name.data
+            student.college_id = form.college_id.data
+            student.addr = form.addr.data
+            student.mobile_no = form.mobile_no.data
+            student.email_1 = form.email_1.data
+            student.email_2 = form.email_2.data
+            student.guardian_name = form.guardian_name.data
+            student.gender = form.gender.data
+            student.category = form.category.data
+            student.dob = form.dob.data
+            student.pwd = form.pwd.data
+            student.blood_group = form.blood_group.data
+            student.marks_10 = form.marks_10.data
+            student.marks_12 = form.marks_12.data
+            student.program = form.program.data
+            student.degree = form.degree.data
+            student.degree_type = form.degree_type.data
+            student.dept = form.dept.data
+            student.special_dept = form.special_dept.data
+            student.cgpa_1 = form.cgpa_1.data
+            student.cgpa_2 = form.cgpa_2.data
+            student.cgpa_3 = form.cgpa_3.data
+            student.cgpa_4 = form.cgpa_4.data
+            db.session.add(student)
+            db.session.commit()
+            print("Database commit Success")
+            # form.username.errors.append('the error message')
+            # load_user()
+            #
+            # new_student = Student_info(username=form.username.data)
+            # db.session.add(new_student)
+            # db.session.commit()
+            return redirect(url_for('dashboard_student'))
+        return render_template('dashboard_student_info.html', form=form)
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
 @login_required
