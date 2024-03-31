@@ -28,6 +28,13 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def current_profile():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    user_name = Student_info.query.filter_by(username=user.username).first()
+    print(user_name.name)
+    return user_name.name
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False, unique=True)
@@ -206,7 +213,8 @@ def dashboard_student():
     if user.admin:
         return redirect(url_for('logout'))
     else:
-        return render_template('dashboard_student.html')
+        user_name = current_profile()
+        return render_template('dashboard_student.html', user_name=user_name)
 
 
 @app.route('/dashboard_student/student_profile', methods=['GET', 'POST'])
@@ -216,6 +224,7 @@ def student_profile():
     if user.admin:
         return redirect(url_for('logout'))
     else:
+        user_name = current_profile()
         print("Just before form execution")
         pre_populate = Student_info.query.filter_by(username=logged_in_user[0]).first()
         form = StudentInfoForm(obj=pre_populate)
@@ -254,7 +263,7 @@ def student_profile():
             print("Database commit Success")
 
             return redirect(url_for('dashboard_student'))
-        return render_template('dashboard_student_info.html', form=form)
+        return render_template('dashboard_student_info.html', form=form, user_name=user_name)
 
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
@@ -262,7 +271,8 @@ def student_profile():
 def dashboard_admin():
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if user.admin:
-        return render_template('dashboard_admin.html')
+        user_name = current_profile()
+        return render_template('dashboard_admin.html', user_name=user_name)
     else:
         return redirect(url_for('logout'))
 
@@ -274,6 +284,7 @@ def add_company():
     if not user.admin:
         return redirect(url_for('logout'))
     else:
+        user_name = current_profile()
         form = AddNewCompany()
         print(f'User name: {logged_in_user[0]}')
         if form.validate_on_submit():
@@ -298,7 +309,7 @@ def add_company():
             print("Database commit Success")
 
             return redirect(url_for('dashboard_admin'))
-        return render_template('dashboard_admin_company_reg.html', form=form)
+        return render_template('dashboard_admin_company_reg.html', form=form, user_name=user_name)
 
 
 @app.route('/dashboard_admin/admin_company_view', methods=['GET', 'POST'])
@@ -309,9 +320,24 @@ def admin_company_view():
         return redirect(url_for('logout'))
     else:
         users = Company.query
+        user_name = current_profile()
     # print(users)
 
-    return render_template('admin_company_view.html', users=users)
+    return render_template('admin_company_view.html', users=users, user_name=user_name)
+
+
+@app.route('/dashboard_student/student_company_view', methods=['GET', 'POST'])
+@login_required
+def student_company_view():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        users = Company.query
+        user_name = current_profile()
+    # print(users)
+
+    return render_template('student_company_view.html', users=users, user_name=user_name)
 
 
 @app.route('/faker1', methods=['GET', 'POST'])
