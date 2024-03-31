@@ -7,6 +7,8 @@ from wtforms import EmailField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from http import HTTPStatus
+from faker import Faker
+
 
 logged_in_user = list()
 app = Flask(__name__)
@@ -157,13 +159,14 @@ class AddNewCompany(FlaskForm):
 
 @app.route('/')
 def home():
+    logged_in_user.clear()
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    logged_in_user.clear()
+
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
@@ -296,6 +299,75 @@ def add_company():
 
             return redirect(url_for('dashboard_admin'))
         return render_template('dashboard_admin_company_reg.html', form=form)
+
+
+@app.route('/dashboard_admin/admin_company_view', methods=['GET', 'POST'])
+@login_required
+def admin_company_view():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        users = Company.query
+    # print(users)
+
+    return render_template('admin_company_view.html', users=users)
+
+
+@app.route('/faker1', methods=['GET', 'POST'])
+def faker1():
+    fake = Faker()
+    for i in range(100):
+        # print("Random Word:", fake.word())
+        # print("Sentence:", fake.sentence())
+        print(f"{i}")
+        company = Company()
+        company.company_name = fake.company()
+        company.website_link = fake.domain_name()
+        company.profile = fake.random_element(elements=('Software Engineer', 'SDE', 'Hardware Eng', 'Trainee', 'Manager', 'DevOps', 'Full Stack Developer'))
+        company.cgpa = fake.random_digit_above_two()
+        company.marks_10 = fake.random_int(min=50, max=80)
+        company.marks_12 = fake.random_int(min=50, max=80)
+        company.backlogs = fake.random_digit_above_two()
+        company.ctc = fake.random_int(min=9, max=60)
+        company.offer_type = fake.random_element(elements=('P', 'I', 'P+I'))
+        company.stipend = fake.random_int(min=40000, max=120000)
+        company.duration = fake.random_digit_above_two()
+        company.location = fake.city()
+        company.start_date = fake.random_element(elements=('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+        company.ppo = fake.pybool()
+        db.session.add(company)
+        db.session.commit()
+        print("Database commit Success")
+    return render_template('index.html')
+
+
+@app.route('/faker2', methods=['GET', 'POST'])
+def faker2():
+    fake = Faker()
+    for i in range(100):
+        # print("Random Word:", fake.word())
+        # print("Sentence:", fake.sentence())
+        print(f"{i}")
+        company = Company()
+        company.company_name = fake.company()
+        company.website_link = fake.domain_name()
+        company.profile = fake.random_element(elements=('Software Engineer', 'SDE', 'Hardware Eng', 'Trainee', 'Manager', 'DevOps', 'Full Stack Developer'))
+        company.cgpa = fake.random_digit_above_two()
+        company.marks_10 = fake.random_int(min=50, max=80)
+        company.marks_12 = fake.random_int(min=50, max=80)
+        company.backlogs = fake.random_digit_above_two()
+        company.ctc = fake.random_int(min=9, max=60)
+        company.offer_type = fake.random_element(elements=('P', 'I', 'P+I'))
+        company.stipend = fake.random_int(min=40000, max=120000)
+        company.duration = fake.random_digit_above_two()
+        company.location = fake.city()
+        company.start_date = fake.random_element(elements=('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+        company.ppo = fake.pybool()
+        db.session.add(company)
+        db.session.commit()
+        print("Database commit Success")
+    return render_template('index.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])

@@ -42,10 +42,10 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('dashboard_admin')}}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>Dashboard Admin</span></a>
             </li>
 
             <!-- Divider -->
@@ -55,13 +55,13 @@
             <div class="sidebar-heading">
                 Interface
             </div>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="{{url_for('add_company')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Company Registration</span></a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{url_for('admin_company_view')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>View Companies</span></a>
             </li>
