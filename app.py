@@ -30,16 +30,37 @@ def load_user(user_id):
 
 def current_profile():
     user = User.query.filter_by(username=logged_in_user[0]).first()
-    user_name = Student_info.query.filter_by(username=user.username).first()
-    print(user_name.name)
-    return user_name.name
+    if user.admin:
+        user_name = Admin_info.query.filter_by(username=user.username).first()
+        print(user_name.admin_name)
+        return user_name.admin_name
+    else:
+        user_name = Student_info.query.filter_by(username=user.username).first()
+        print(user_name.name)
+        return user_name.name
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
+
+
+class Login_log(db.Model, UserMixin):
+    __tablename__ = 'login_log'
+    log_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(200), nullable=False, unique=True)
+    time = db.Column(db.DateTime)
+
+
+class Admin_info(db.Model, UserMixin):
+    __tablename__ = "admin_table"
+    ad_no = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(200), nullable=False, unique=True)
+    admin_name = db.Column(db.String(200), nullable=False)
+
 
 
 class Student_info(db.Model, UserMixin):
@@ -88,6 +109,8 @@ class Company(db.Model, UserMixin):
     location = db.Column(db.String(200), nullable=True)
     start_date = db.Column(db.String(100), nullable=True)
     ppo = db.Column(db.Boolean, nullable=True)
+    active_reg = db.Column(db.Boolean, nullable=False)
+    last_date = db.Column(db.Date, nullable=True)
 
 
 class RegisterForm(FlaskForm):
@@ -159,10 +182,16 @@ class AddNewCompany(FlaskForm):
     location = StringField(validators=[Length(max=200)])
     start_date = StringField(validators=[Length(max=100)])
     ppo = BooleanField()
+    active_reg = BooleanField(default=False)
+    last_date = DateField(format='%Y-%m-%d')
 
     submit = SubmitField("Submit")
 
 
+class AdminInfo(FlaskForm):
+    username = StringField(validators=[Length(max=200)])
+    admin_name = StringField(validators=[Length(max=200)])
+    submit = SubmitField("Submit")
 
 @app.route('/')
 def home():
@@ -179,6 +208,10 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
+                user_log = Login_log()
+                user_log.username = user.username
+                db.session.add(user_log)
+                db.session.commit()
                 if user.admin:
                     logged_in_user.append(user.username)
                     return redirect(url_for('dashboard_admin'))
@@ -304,6 +337,8 @@ def add_company():
             company.location = form.location.data
             company.start_date = form.start_date.data
             company.ppo = form.ppo.data
+            company.active_reg = form.active_reg.data
+            company.last_date = form.last_date.data
             db.session.add(company)
             db.session.commit()
             print("Database commit Success")
@@ -368,32 +403,17 @@ def faker1():
     return render_template('index.html')
 
 
-@app.route('/faker2', methods=['GET', 'POST'])
-def faker2():
-    fake = Faker()
-    for i in range(100):
-        # print("Random Word:", fake.word())
-        # print("Sentence:", fake.sentence())
-        print(f"{i}")
-        company = Company()
-        company.company_name = fake.company()
-        company.website_link = fake.domain_name()
-        company.profile = fake.random_element(elements=('Software Engineer', 'SDE', 'Hardware Eng', 'Trainee', 'Manager', 'DevOps', 'Full Stack Developer'))
-        company.cgpa = fake.random_digit_above_two()
-        company.marks_10 = fake.random_int(min=50, max=80)
-        company.marks_12 = fake.random_int(min=50, max=80)
-        company.backlogs = fake.random_digit_above_two()
-        company.ctc = fake.random_int(min=9, max=60)
-        company.offer_type = fake.random_element(elements=('P', 'I', 'P+I'))
-        company.stipend = fake.random_int(min=40000, max=120000)
-        company.duration = fake.random_digit_above_two()
-        company.location = fake.city()
-        company.start_date = fake.random_element(elements=('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
-        company.ppo = fake.pybool()
-        db.session.add(company)
-        db.session.commit()
-        print("Database commit Success")
-    return render_template('index.html')
+# @app.route('/faker2', methods=['GET', 'POST'])
+# def faker2():
+#     fake = Faker()
+#     user = User.query.filter_by(admin=1).all()
+#     admin = Admin_info.query
+#     admin.username = user.username
+#     admin.name = fake.name()
+#     db.session.add(admin)
+#     db.session.commit()
+#     print("Database commit Success")
+#     return render_template('index.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])

@@ -38,7 +38,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Placement Portal<sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">Placement Portal</div>
             </a>
 
             <!-- Divider -->
@@ -385,6 +385,7 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
+                                            <th>Registration Status</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -398,11 +399,14 @@
                                             <th>Location</th>
                                             <th>Start Date</th>
                                             <th>PPO</th>
+                                            <th>Last Date of Registration</th>
+
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Company</th>
+                                            <th>Registration Status</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -416,12 +420,19 @@
                                             <th>Location</th>
                                             <th>Start Date</th>
                                             <th>PPO</th>
+                                            <th>Last Date of Registration</th>
+
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         {% for user in users %}
                                             <tr>
                                                 <td>{{ user.company_name }}</td>
+                                                {% if user.active_reg == True %}
+                                                    <td bgcolor="green" class="text-white">Active</td>
+                                                {% else %}
+                                                    <td bgcolor="red" class="text-white">De-active</td>
+                                                {% endif %}
                                                 <td>{{ user.website_link }}</td>
                                                 <td>{{ user.profile }}</td>
                                                 <td>{{ user.cgpa }}</td>
@@ -435,6 +446,9 @@
                                                 <td>{{ user.location }}</td>
                                                 <td>{{ user.start_date }}</td>
                                                 <td>{{ user.ppo }}</td>
+                                                <td>{{user.last_date}}</td>
+
+
                                             </tr>
                                           {% endfor %}
                                     </tbody>
