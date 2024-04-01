@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
+from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
 from wtforms import EmailField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -63,6 +64,16 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
 
+
+class Student_company_registration(db.Model, UserMixin):
+    __tablename__ = "student_company_reg"
+    scr_id = db.Column(db.Integer, primary_key=True)
+    sid = db.Column(db.Integer, db.ForeignKey('student_table.sid'), nullable=True)
+    student_table = db.relationship("Student_info", backref=backref("student_table", uselist=False))
+    cno = db.Column(db.Integer, db.ForeignKey('company.cno'), nullable=True)
+    company = db.relationship("Company", backref=backref("company", uselist=False))
+    active_reg = db.Column(db.Boolean, nullable=True)
+    registration_time = db.Column(db.DateTime)
 
 class Login_log(db.Model, UserMixin):
     __tablename__ = 'login_log'
@@ -407,8 +418,21 @@ def edit_company(company_id):
 @app.route('/dashboard_student/student_company_view/student_company_registered/<company_id>', methods=['GET', 'POST'])
 @login_required
 def student_company_registered(company_id):
-
-    return render_template('student_company_reg_success.html')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        user_name = current_profile()
+        company = Company.query.filter_by(cno=company_id).first()
+        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+        stu_comp_reg = Student_company_registration()
+        stu_comp_reg.sid = student.sid
+        stu_comp_reg.cno = company.cno
+        stu_comp_reg.active_reg = True
+        db.session.add(stu_comp_reg)
+        db.session.commit()
+        print('student company registration database updated')
+    return render_template('student_company_reg_success.html', user_name=user_name)
 
 
 
@@ -436,9 +460,16 @@ def student_company_view():
     else:
         users = Company.query
         user_name = current_profile()
+        existing_list = list()
+        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+
+        stu_comp_reg = Student_company_registration.query.filter_by(sid=student.sid).all()
+        for item in stu_comp_reg:
+            existing_list.append(item.cno)
+
     # print(users)
 
-    return render_template('student_company_view.html', users=users, user_name=user_name)
+    return render_template('student_company_view.html', users=users, user_name=user_name, existing_list=existing_list)
 
 
 

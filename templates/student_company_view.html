@@ -433,9 +433,29 @@
                                                 {% else %}
                                                     <td bgcolor="red" class="text-white">De-active</td>
                                                 {% endif %}
-                                                <td>
-                                                    <a href="{{url_for('edit_company', company_id=user.cno)}}">Edit</a>
-                                                </td>
+                                                {% if user.active_reg == True and user.cno not in existing_list%}
+                                                    <td>
+<!--                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}">Register</a>-->
+                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
+                                                            <span class="icon text-white-50">
+                                                                <i class="fas fa-flag"></i>
+                                                            </span>
+                                                            <span class="text">Register</span>
+                                                        </a>
+                                                    </td>
+                                                {% else %}
+                                                    <td>
+<!--                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}">Register</a>-->
+                                                        <a class="btn btn-secondary btn-icon-split">
+                                                            <span class="icon text-white-50">
+                                                                <i class="fas fa-exclamation-triangle"></i>
+                                                            </span>
+                                                            <span class="text">Register</span>
+                                                        </a>
+                                                    </td>
+
+                                                {% endif %}
+
                                                 <td>{{ user.website_link }}</td>
                                                 <td>{{ user.profile }}</td>
                                                 <td>{{ user.cgpa }}</td>
