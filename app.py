@@ -364,7 +364,7 @@ def add_company():
         return render_template('dashboard_admin_company_reg.html', form=form, user_name=user_name)
 
 
-@app.route('/dashboard_admin/edit_company', methods=['GET', 'POST'])
+@app.route('/dashboard_admin/edit_company/<company_id>', methods=['GET', 'POST'])
 @login_required
 def edit_company(company_id):
     user = User.query.filter_by(username=logged_in_user[0]).first()
@@ -373,12 +373,12 @@ def edit_company(company_id):
     else:
         user_name = current_profile()
         pre_populate = Company.query.filter_by(cno=company_id).first()
-        print(pre_populate.company_name)
-        form = AddNewCompany()
+        # print(pre_populate.company_name)
+        form = AddNewCompany(obj=pre_populate)
         print(f'User name: {logged_in_user[0]}')
         if form.validate_on_submit():
 
-            company = Company()
+            company = Company.query.filter_by(cno=company_id).first()
             company.company_name = form.company_name.data
             company.website_link = form.website_link.data
             company.profile = form.profile.data
@@ -392,6 +392,7 @@ def edit_company(company_id):
             company.duration = form.duration.data
             company.location = form.location.data
             company.start_date = form.start_date.data
+            print(form.active_reg.data)
             company.ppo = form.ppo.data
             company.active_reg = form.active_reg.data
             company.last_date = form.last_date.data
@@ -401,6 +402,16 @@ def edit_company(company_id):
 
             return redirect(url_for('dashboard_admin'))
         return render_template('dashboard_admin_company_edit.html', form=form, user_name=user_name)
+
+
+@app.route('/dashboard_student/student_company_view/student_company_registered/<company_id>', methods=['GET', 'POST'])
+@login_required
+def student_company_registered(company_id):
+
+    return render_template('student_company_reg_success.html')
+
+
+
 
 @app.route('/dashboard_admin/admin_company_view', methods=['GET', 'POST'])
 @login_required

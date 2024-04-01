@@ -386,6 +386,7 @@
                                         <tr>
                                             <th>Company</th>
                                             <th>Registration Status</th>
+                                            <th>Register</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -406,6 +407,7 @@
                                         <tr>
                                             <th>Company</th>
                                             <th>Registration Status</th>
+                                            <th>Register</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -431,6 +433,9 @@
                                                 {% else %}
                                                     <td bgcolor="red" class="text-white">De-active</td>
                                                 {% endif %}
+                                                <td>
+                                                    <a href="{{url_for('edit_company', company_id=user.cno)}}">Edit</a>
+                                                </td>
                                                 <td>{{ user.website_link }}</td>
                                                 <td>{{ user.profile }}</td>
                                                 <td>{{ user.cgpa }}</td>

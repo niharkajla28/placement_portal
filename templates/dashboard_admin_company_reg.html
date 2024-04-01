@@ -391,7 +391,7 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Add Company</h1>
                             </div>
-                            <form class="user" action="{{url_for('/dashboard_admin/add_company')}}" method="POST">
+                            <form class="user" action="" method="POST">
                                 {{ form.csrf_token }}
 
                                     <div class="form-group">
@@ -522,7 +522,7 @@
                                     </div>
                                     <div class="form-group">
                                         Activate Registration:
-                                        {{ form.activ_reg(placeholder="Yes/No" ,class="form-control form-control-user", id="active_reg")  }}
+                                        {{ form.active_reg(placeholder="Yes/No" ,class="form-control form-control-user", id="active_reg")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
