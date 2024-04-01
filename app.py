@@ -8,6 +8,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from http import HTTPStatus
 from faker import Faker
+from datetime import date
 
 
 logged_in_user = list()
@@ -38,6 +39,21 @@ def current_profile():
         user_name = Student_info.query.filter_by(username=user.username).first()
         print(user_name.name)
         return user_name.name
+
+
+def status_updater():
+    company_count = Company.query.filter_by(active_reg=1).count()
+    company = Company.query.filter_by(active_reg=1).all()
+    for item in company:
+        print(f'For loop {item}')
+        # print(f'Date of {item} is {item.last_date} but today is {date.today()}')
+        if item.last_date <= date.today():
+            print(f'Company Last Date: {item.last_date}')
+            item.active_reg = False
+            db.session.add(item)
+            db.session.commit()
+            print('Successfully committed to Database')
+
 
 
 class User(db.Model, UserMixin):
@@ -403,6 +419,10 @@ def faker1():
     return render_template('index.html')
 
 
+@app.route('/testing', methods=['GET', 'POST'])
+def testing():
+    status_updater()
+    return render_template('index.html')
 # @app.route('/faker2', methods=['GET', 'POST'])
 # def faker2():
 #     fake = Faker()

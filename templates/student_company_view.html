@@ -385,6 +385,7 @@
                                     <thead>
                                         <tr>
                                             <th>Company</th>
+                                            <th>Registration Status</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -398,11 +399,13 @@
                                             <th>Location</th>
                                             <th>Start Date</th>
                                             <th>PPO</th>
+                                            <th>Last Date of Registration</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Company</th>
+                                            <th>Registration Status</th>
                                             <th>Website</th>
                                             <th>Profile</th>
                                             <th>Min CGPA</th>
@@ -416,12 +419,18 @@
                                             <th>Location</th>
                                             <th>Start Date</th>
                                             <th>PPO</th>
+                                            <th>Last Date for Registration</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         {% for user in users %}
                                             <tr>
                                                 <td>{{ user.company_name }}</td>
+                                                {% if user.active_reg == True %}
+                                                    <td bgcolor="green" class="text-white">Active</td>
+                                                {% else %}
+                                                    <td bgcolor="red" class="text-white">De-active</td>
+                                                {% endif %}
                                                 <td>{{ user.website_link }}</td>
                                                 <td>{{ user.profile }}</td>
                                                 <td>{{ user.cgpa }}</td>
@@ -435,6 +444,7 @@
                                                 <td>{{ user.location }}</td>
                                                 <td>{{ user.start_date }}</td>
                                                 <td>{{ user.ppo }}</td>
+                                                <td>{{user.last_date}}</td>
                                             </tr>
                                           {% endfor %}
                                     </tbody>
@@ -484,7 +494,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{{url_for('logout')}}">Logout</a>
                 </div>
             </div>
         </div>
