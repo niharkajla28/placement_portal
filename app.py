@@ -212,6 +212,7 @@ class AdminInfo(FlaskForm):
 @app.route('/')
 def home():
     logged_in_user.clear()
+    status_updater()
     return render_template('index.html')
 
 
@@ -363,6 +364,44 @@ def add_company():
         return render_template('dashboard_admin_company_reg.html', form=form, user_name=user_name)
 
 
+@app.route('/dashboard_admin/edit_company', methods=['GET', 'POST'])
+@login_required
+def edit_company(company_id):
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        user_name = current_profile()
+        pre_populate = Company.query.filter_by(cno=company_id).first()
+        print(pre_populate.company_name)
+        form = AddNewCompany()
+        print(f'User name: {logged_in_user[0]}')
+        if form.validate_on_submit():
+
+            company = Company()
+            company.company_name = form.company_name.data
+            company.website_link = form.website_link.data
+            company.profile = form.profile.data
+            company.cgpa = form.cgpa.data
+            company.marks_10 = form.marks_10.data
+            company.marks_12 = form.marks_12.data
+            company.backlogs = form.backlogs.data
+            company.ctc = form.ctc.data
+            company.offer_type = form.offer_type.data
+            company.stipend = form.stipend.data
+            company.duration = form.duration.data
+            company.location = form.location.data
+            company.start_date = form.start_date.data
+            company.ppo = form.ppo.data
+            company.active_reg = form.active_reg.data
+            company.last_date = form.last_date.data
+            db.session.add(company)
+            db.session.commit()
+            print("Database commit Success")
+
+            return redirect(url_for('dashboard_admin'))
+        return render_template('dashboard_admin_company_edit.html', form=form, user_name=user_name)
+
 @app.route('/dashboard_admin/admin_company_view', methods=['GET', 'POST'])
 @login_required
 def admin_company_view():
@@ -389,6 +428,8 @@ def student_company_view():
     # print(users)
 
     return render_template('student_company_view.html', users=users, user_name=user_name)
+
+
 
 
 @app.route('/faker1', methods=['GET', 'POST'])
