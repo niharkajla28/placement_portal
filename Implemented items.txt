@@ -1,0 +1,10 @@
+1. Same login page but different different dashboards based on student and admin. 
+2. Logged in student can't view other pages related to admin and vice-a-versa.
+3. Passwords are hasked and stored in database for security reasons.
+4. Form for student info is editable and shows all the values previously filled and once submit is done values are updated.
+5. Form for Company info is editable and shows all the values previously filled and once submit is done values are updated.
+6. Student can View the companies added by admin.
+7. Admin can view companies added by admin.
+8. When last date of registration is changed then the company status becomes Deactivated and this is done automatically.
+9. Student can't register for deactivated company.
+10. Student can't register for same company multiple times.(Fixes the issue for double entry of in google forms.)

@@ -434,6 +434,7 @@
                                                     <td bgcolor="red" class="text-white">De-active</td>
                                                 {% endif %}
                                                 {% if user.active_reg == True and user.cno not in existing_list%}
+                                                    {% if user.active_reg == True %}
                                                     <td>
 <!--                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}">Register</a>-->
                                                         <a href="{{url_for('student_company_registered', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
@@ -443,6 +444,7 @@
                                                             <span class="text">Register</span>
                                                         </a>
                                                     </td>
+                                                    {% endif %}
                                                 {% else %}
                                                     <td>
 <!--                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}">Register</a>-->
