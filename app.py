@@ -46,7 +46,7 @@ def status_updater():
     company_count = Company.query.filter_by(active_reg=1).count()
     company = Company.query.filter_by(active_reg=1).all()
     for item in company:
-        print(f'For loop {item}')
+        # print(f'For loop {item}')
         # print(f'Date of {item} is {item.last_date} but today is {date.today()}')
         if item.last_date <= date.today():
             print(f'Company Last Date: {item.last_date}')
@@ -85,7 +85,7 @@ class Login_log(db.Model, UserMixin):
 class Admin_info(db.Model, UserMixin):
     __tablename__ = "admin_table"
     ad_no = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(200), nullable=False, unique=True)
+    username = db.Column(db.String(30), nullable=False, unique=True)
     admin_name = db.Column(db.String(200), nullable=False)
 
 
@@ -117,6 +117,7 @@ class Student_info(db.Model, UserMixin):
     cgpa_2 = db.Column(db.String(5), nullable=True)
     cgpa_3 = db.Column(db.String(5), nullable=True)
     cgpa_4 = db.Column(db.String(5), nullable=True)
+    cgpa = db.Column(db.String(5), nullable=True)
 
 
 class Company(db.Model, UserMixin):
@@ -289,6 +290,7 @@ def student_profile():
         print("Just before form execution")
         pre_populate = Student_info.query.filter_by(username=logged_in_user[0]).first()
         form = StudentInfoForm(obj=pre_populate)
+        cgpa_combined = pre_populate.cgpa
         print("After form")
         print(f'User name: {logged_in_user[0]}')
         if form.validate_on_submit():
@@ -315,16 +317,28 @@ def student_profile():
             student.degree_type = form.degree_type.data
             student.dept = form.dept.data
             student.special_dept = form.special_dept.data
+            counter = 0
             student.cgpa_1 = form.cgpa_1.data
+            if student.cgpa_1 != '0':
+                counter += 1
             student.cgpa_2 = form.cgpa_2.data
+            if student.cgpa_2 != '0':
+                counter += 1
             student.cgpa_3 = form.cgpa_3.data
+            if student.cgpa_3 != '0':
+                counter += 1
             student.cgpa_4 = form.cgpa_4.data
+            if student.cgpa_4 != '0':
+                counter += 1
+            print(counter)
+            student.cgpa = (float(student.cgpa_1) + float(student.cgpa_2) + float(student.cgpa_3) + float(student.cgpa_4)) / counter
+
             db.session.add(student)
             db.session.commit()
             print("Database commit Success")
 
             return redirect(url_for('dashboard_student'))
-        return render_template('dashboard_student_info.html', form=form, user_name=user_name)
+        return render_template('dashboard_student_info.html', form=form, user_name=user_name, cgpa_combined=cgpa_combined)
 
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
@@ -469,7 +483,7 @@ def student_company_view():
 
     # print(users)
 
-    return render_template('student_company_view.html', users=users, user_name=user_name, existing_list=existing_list)
+    return render_template('student_company_view.html', users=users, user_name=user_name, existing_list=existing_list, student=student)
 
 
 
@@ -496,6 +510,8 @@ def faker1():
         company.location = fake.city()
         company.start_date = fake.random_element(elements=('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
         company.ppo = fake.pybool()
+        company.active_reg = fake.random_element(elements=(True, False))
+        company.last_date = fake.future_date(end_date="+30d")
         db.session.add(company)
         db.session.commit()
         print("Database commit Success")
