@@ -118,7 +118,7 @@ class Student_info(db.Model, UserMixin):
     cgpa_3 = db.Column(db.String(5), nullable=True)
     cgpa_4 = db.Column(db.String(5), nullable=True)
     cgpa = db.Column(db.String(5), nullable=True)
-
+    backlogs = db.Column(db.String(5), nullable=True)
 
 class Company(db.Model, UserMixin):
     __tablename__ = "company"
@@ -190,7 +190,7 @@ class StudentInfoForm(FlaskForm):
     cgpa_2 = StringField(validators=[Length(max=5)])
     cgpa_3 = StringField(validators=[Length(max=5)])
     cgpa_4 = StringField(validators=[Length(max=5)])
-
+    backlogs = StringField(validators=[Length(max=5)])
     submit = SubmitField("Submit")
 
 
@@ -317,6 +317,7 @@ def student_profile():
             student.degree_type = form.degree_type.data
             student.dept = form.dept.data
             student.special_dept = form.special_dept.data
+            student.backlogs = form.backlogs.data
             counter = 0
             student.cgpa_1 = form.cgpa_1.data
             if student.cgpa_1 != '0':
@@ -502,7 +503,7 @@ def faker1():
         company.cgpa = fake.random_digit_above_two()
         company.marks_10 = fake.random_int(min=50, max=80)
         company.marks_12 = fake.random_int(min=50, max=80)
-        company.backlogs = fake.random_digit_above_two()
+        company.backlogs = fake.random_digit()
         company.ctc = fake.random_int(min=9, max=60)
         company.offer_type = fake.random_element(elements=('P', 'I', 'P+I'))
         company.stipend = fake.random_int(min=40000, max=120000)

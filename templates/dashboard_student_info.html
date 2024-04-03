@@ -513,7 +513,7 @@
                                     </div>
                                     <div class="form-group">
                                         12th Percentage
-                                        {{ form.marks_10(placeholder="12th Percentage" ,class="form-control form-control-user", id="marks_12")  }}
+                                        {{ form.marks_12(placeholder="12th Percentage" ,class="form-control form-control-user", id="marks_12")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}
@@ -559,6 +559,15 @@
                                     <div class="form-group">
                                         Specialization:
                                         {{ form.special_dept(placeholder="Specialization" ,class="form-control form-control-user", id="special_dpt")  }}
+                                         {% for field, errors in form.errors.items() %}
+                                             <small class="form-text text-muted ">
+                                                {{ ', '.join(errors) }}
+                                            </small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        Backlogs:
+                                        {{ form.backlogs(placeholder="Total backlogs" ,class="form-control form-control-user", id="backlogs")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
                                                 {{ ', '.join(errors) }}

@@ -434,7 +434,7 @@
                                                     <td bgcolor="red" class="text-white">De-active</td>
                                                 {% endif %}
                                                 {% if user.active_reg == True and user.cno not in existing_list%}
-                                                    {% if user.cgpa <= student.cgpa %}
+                                                    {% if (user.cgpa <= student.cgpa) and (user.marks_10 <= student.marks_10) and (user.marks_12 <= student.marks_12) and (user.backlogs >= student.backlogs)  %}
                                                     <td>
 <!--                                                        <a href="{{url_for('student_company_registered', company_id=user.cno)}}">Register</a>-->
                                                         <a href="{{url_for('student_company_registered', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
