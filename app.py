@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
+from sqlalchemy import desc
 from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
 from wtforms import EmailField, DateField
@@ -447,8 +448,20 @@ def student_company_registered(company_id):
         db.session.add(stu_comp_reg)
         db.session.commit()
         print('student company registration database updated')
-    return render_template('student_company_reg_success.html', user_name=user_name)
+    return render_template('student_company_reg_success.html', user_name=user_name, company_name=company.company_name)
 
+
+@app.route('/dashboard_student/student_company_view/student_company_viewer/<company_id>', methods=['GET', 'POST'])
+@login_required
+def student_company_viewer(company_id):
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        user_name = current_profile()
+        company = Company.query.filter_by(cno=company_id).first()
+        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+    return render_template('student_company_viewer.html', user_name=user_name, company=company, student=student)
 
 
 
@@ -474,17 +487,18 @@ def student_company_view():
         return redirect(url_for('logout'))
     else:
         users = Company.query
+        # users = Company.query.order_by(desc(Company.ctc))
         user_name = current_profile()
-        existing_list = list()
-        student = Student_info.query.filter_by(username=logged_in_user[0]).first()
-
-        stu_comp_reg = Student_company_registration.query.filter_by(sid=student.sid).all()
-        for item in stu_comp_reg:
-            existing_list.append(item.cno)
+        # existing_list = list()
+        # student = Student_info.query.filter_by(username=logged_in_user[0]).first()
+        #
+        # stu_comp_reg = Student_company_registration.query.filter_by(sid=student.sid).all()
+        # for item in stu_comp_reg:
+        #     existing_list.append(item.cno)
 
     # print(users)
 
-    return render_template('student_company_view.html', users=users, user_name=user_name, existing_list=existing_list, student=student)
+    return render_template('student_company_view.html', users=users, user_name=user_name)
 
 
 
@@ -541,6 +555,7 @@ def testing():
 def logout():
     logout_user()
     logged_in_user.clear()
+    print("Logout: logged_in_user cleared")
     return redirect(url_for('home'))
 
 @app.route('/test', methods=['GET', 'POST'])

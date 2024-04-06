@@ -9,19 +9,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Student Company View</title>
+    <title>Student - Dashboard</title>
 
-    <!-- Custom fonts for this template -->
+    <!-- Custom fonts for this template-->
     <link href="{{url_for('static', filename='vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Custom styles for this template -->
+    <!-- Custom styles for this template-->
     <link href="{{url_for('static', filename='css/sb-admin-2.min.css')}}" rel="stylesheet">
-
-    <!-- Custom styles for this page -->
-    <link href="{{url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 
 </head>
 
@@ -45,8 +42,8 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('dashboard_student')}}">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard Student</span></a>
             </li>
@@ -63,13 +60,18 @@
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Student Profile</span></a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{{url_for('student_company_view')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>View Companies</span></a>
             </li>
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
+<!--                <a class="nav-link collapsed" href="{{url_for('student_profile')}}" data-toggle="collapse" data-target="#collapseTwo"-->
+<!--                    aria-expanded="true" aria-controls="collapseTwo">-->
+<!--                    <i class="fas fa-fw fa-cog"></i>-->
+<!--                    <span>Student Profile</span>-->
+<!--                </a>-->
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -121,8 +123,8 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="{{url_for('login')}}">Login</a>
+                        <a class="collapse-item" href="{{url_for('register')}}">Register</a>
                         <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Other Pages:</h6>
@@ -140,7 +142,11 @@
             </li>
 
             <!-- Nav Item - Tables -->
-
+            <li class="nav-item">
+                <a class="nav-link" href="tables.html">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -148,6 +154,13 @@
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+            <div class="sidebar-card d-none d-lg-flex">
+                <img class="sidebar-card-illustration mb-2" src="{{url_for('static', filename='img/undraw_rocket.svg')}}" alt="...">
+                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
+                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
             </div>
 
         </ul>
@@ -163,11 +176,9 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <form class="form-inline">
-                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                    </form>
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
 
                     <!-- Topbar Search -->
                     <form
@@ -277,7 +288,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                        <img class="rounded-circle" src="{{url_for('static', filename='img/undraw_profile_1.svg')}}"
                                             alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
@@ -289,7 +300,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                        <img class="rounded-circle" src="{{url_for('static', filename='img/undraw_profile_2.svg')}}"
                                             alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
@@ -301,7 +312,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                        <img class="rounded-circle" src="{{url_for('static', filename='img/undraw_profile_3.svg')}}"
                                             alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
@@ -369,62 +380,317 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div>
 
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Company: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.company_name}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>View</th>
-                                            <th>Last Date of Registration</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>View</th>
-                                            <th>Last Date for Registration</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        {% for user in users %}
-                                            <tr>
-                                                <td>{{ user.company_name }}</td>
-                                                {% if user.active_reg == True %}
-                                                    <td bgcolor="green" class="text-white">Active</td>
-                                                {% else %}
-                                                    <td bgcolor="red" class="text-white">De-active</td>
-                                                {% endif %}
-                                                <td>
-                                                    <a href="{{url_for('student_company_viewer', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-arrow-right"></i>
-                                                            </span>
-                                                            <span class="text">View</span>
-                                                        </a>
-                                                </td>
 
-                                                <td>{{user.last_date}}</td>
-                                            </tr>
-                                          {% endfor %}
-                                    </tbody>
-                                </table>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Website: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.website_link}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="row">
 
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Minimum CGPA: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.cgpa}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Minimum 10th Marks: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.marks_10}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Minimum 12th Marks: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.marks_12}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Maximum backlogs allowed: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.backlogs}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                CTC: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.ctc}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Offer Type: </div>
+                                            {% if company.offer_type == 'P' %}
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Placement</div>
+                                                {% elif company.offer_type == 'I' %}
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Internship</div>
+                                                {% elif company.offer_type == 'P+I' %}
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Placement + Internship</div>
+                                                {% endif %}
+
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Stipend: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.stipend}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Location: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.location}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Job Start Date: </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.start_date}}</div>
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                PPO: </div>
+                                            {% if company.ppo == True %}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">Yes</div>
+                                            {% else %}
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">No</div>
+                                            {% endif %}
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body ">
+                                    <div class="row no-gutters align-items-center ">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Last Date to register: </div>
+                                                <div class="h5 mb-0 font-weight-bold text-red-800">{{company.last_date}}</div>
+
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-5 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body ">
+                                    <div class="row no-gutters align-items-center ">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Register: </div>
+                                            {% if company.active_reg == True %}
+                                                    {% if (company.cgpa <= student.cgpa) and (company.marks_10 <= student.marks_10) and (company.marks_12 <= student.marks_12) and (company.backlogs >= student.backlogs)  %}
+
+
+                                                        <div class="h5 mb-0 font-weight-bold text-red-800">
+                                                            <a href="{{url_for('student_company_registered', company_id=company.cno)}}"> Click here</a>
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div class="h5 mb-0 font-weight-bold text-red-800">
+                                                            <a href="">Not eligible</a>
+                                                        </div>
+
+                                                    {% endif %}
+                                            {% else %}
+                                                <div class="h5 mb-0 font-weight-bold text-red-800">
+                                                <a href="">Not eligible</a>
+                                                </div>
+
+                                            {% endif %}
+                                        </div>
+<!--                                        <div class="col-auto">-->
+<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -435,7 +701,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; Nihar Kajla 2024</span>
                     </div>
                 </div>
             </footer>
@@ -483,11 +749,11 @@
     <script src="{{url_for('static', filename='js/sb-admin-2.min.js')}}"></script>
 
     <!-- Page level plugins -->
-    <script src="{{url_for('static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{url_for('static', filename='vendor/chart.js/Chart.min.js')}}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{{url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+    <script src="{{url_for('static', filename='js/demo/chart-area-demo.js')}}"></script>
+    <script src="{{url_for('static', filename='js/demo/chart-pie-demo.js')}}"></script>
 
 </body>
 
