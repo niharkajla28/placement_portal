@@ -49,7 +49,7 @@ def status_updater():
     for item in company:
         # print(f'For loop {item}')
         # print(f'Date of {item} is {item.last_date} but today is {date.today()}')
-        if item.last_date <= date.today():
+        if item.last_date < date.today():
             print(f'Company Last Date: {item.last_date}')
             item.active_reg = False
             db.session.add(item)
@@ -515,9 +515,19 @@ def student_company_viewer(company_id):
         return redirect(url_for('logout'))
     else:
         user_name = current_profile()
+        already_registered_flag = False
         company = Company.query.filter_by(cno=company_id).first()
         student = Student_info.query.filter_by(username=logged_in_user[0]).first()
-    return render_template('student_company_viewer.html', user_name=user_name, company=company, student=student)
+        eligible = company.eligible_branch.split(',')
+        already_registered = Student_company_registration.query.filter_by(cno=company.cno, sid=student.sid).first()
+
+        if already_registered:
+            already_registered_flag = True
+        else:
+            already_registered_flag = False
+
+        # print(eligible)
+    return render_template('student_company_viewer.html', user_name=user_name, company=company, student=student, eligible=eligible, already_registered_flag=already_registered_flag)
 
 
 
@@ -583,9 +593,9 @@ def faker1():
         company.ppo = fake.pybool()
         company.active_reg = fake.random_element(elements=(True, False))
         company.last_date = fake.future_date(end_date="+30d")
-        db.session.add(company)
-        db.session.commit()
-        print("Database commit Success")
+        # db.session.add(company)
+        # db.session.commit()
+        # print("Database commit Success")
     return render_template('index.html')
 
 
@@ -593,17 +603,20 @@ def faker1():
 def testing():
     status_updater()
     return render_template('index.html')
-# @app.route('/faker2', methods=['GET', 'POST'])
-# def faker2():
-#     fake = Faker()
-#     user = User.query.filter_by(admin=1).all()
-#     admin = Admin_info.query
-#     admin.username = user.username
-#     admin.name = fake.name()
-#     db.session.add(admin)
-#     db.session.commit()
-#     print("Database commit Success")
-#     return render_template('index.html')
+
+@app.route('/faker2', methods=['GET', 'POST'])
+def faker2():
+    fake = Faker()
+    user = Company.query
+    for item in user:
+
+        t = fake.random_elements(elements=("CE", "CSE", "CSIS", "DAM", "DE", "ECE", "ENE", "ES", "IE", "MME", "PE", "PED", "PS", "PSM", "SE", "ST", "THE", "TRE", "VLSI", "WOC", "WRE"), unique=True)
+        item.eligible_branch = ",".join(t)
+        # print(z)
+        db.session.add(item)
+        db.session.commit()
+        print("Database commit Success")
+    return render_template('index.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
