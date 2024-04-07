@@ -340,7 +340,7 @@ def student_profile():
             print("Database commit Success")
 
             return redirect(url_for('dashboard_student'))
-        return render_template('dashboard_student_info.html', form=form, user_name=user_name, cgpa_combined=cgpa_combined)
+        return render_template('dashboard_student_info.html', form=form, user_name=user_name, cgpa_combined=cgpa_combined, sp_dpt=pre_populate.special_dept)
 
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])

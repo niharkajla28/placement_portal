@@ -556,14 +556,16 @@
                                             </small>
                                         {% endfor %}
                                     </div>
+
                                     <div class="form-group">
-                                        Specialization:
-                                        {{ form.special_dept(placeholder="Specialization" ,class="form-control form-control-user", id="special_dpt")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
-                                            </small>
-                                        {% endfor %}
+                                        Specialization: {{sp_dpt}}
+                                        <select class="form-control" aria-label=".form-select-lg example" name="special_dept" id="special_dept">
+
+                                              <option  value="{{sp_dpt}}" selected>{{sp_dpt}}</option>
+                                              <option value="CSE">CSE</option>
+                                              <option value="CSIS">CSIS</option>
+                                              <option value="3">Three</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         Backlogs:
