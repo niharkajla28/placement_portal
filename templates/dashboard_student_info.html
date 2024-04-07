@@ -560,11 +560,12 @@
                                     <div class="form-group">
                                         Specialization: {{sp_dpt}}
                                         <select class="form-control" aria-label=".form-select-lg example" name="special_dept" id="special_dept">
+                                            <option  value="{{sp_dpt}}" selected>{{sp_dpt}}</option>
+                                            {% for branch in branches %}
 
-                                              <option  value="{{sp_dpt}}" selected>{{sp_dpt}}</option>
-                                              <option value="CSE">CSE</option>
-                                              <option value="CSIS">CSIS</option>
-                                              <option value="3">Three</option>
+                                              <option value="{{branch.special}}">{{branch.full_name}}</option>
+
+                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">

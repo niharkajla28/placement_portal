@@ -65,6 +65,13 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     admin = db.Column(db.Boolean, default=False, nullable=False)
 
+class Branch(db.Model, UserMixin):
+    __tablename__ = "branches"
+    b_id = db.Column(db.Integer, primary_key=True)
+    branch = db.Column(db.String(200), nullable=False)
+    special = db.Column(db.String(20), nullable=False, unique=True)
+    full_name = db.Column(db.String(200), nullable=False)
+
 
 class Student_company_registration(db.Model, UserMixin):
     __tablename__ = "student_company_reg"
@@ -120,6 +127,7 @@ class Student_info(db.Model, UserMixin):
     cgpa_4 = db.Column(db.String(5), nullable=True)
     cgpa = db.Column(db.String(5), nullable=True)
     backlogs = db.Column(db.String(5), nullable=True)
+    red_flag = db.Column(db.Integer)
 
 class Company(db.Model, UserMixin):
     __tablename__ = "company"
@@ -192,6 +200,7 @@ class StudentInfoForm(FlaskForm):
     cgpa_3 = StringField(validators=[Length(max=5)])
     cgpa_4 = StringField(validators=[Length(max=5)])
     backlogs = StringField(validators=[Length(max=5)])
+
     submit = SubmitField("Submit")
 
 
@@ -289,6 +298,7 @@ def student_profile():
     else:
         user_name = current_profile()
         print("Just before form execution")
+        branches = Branch.query
         pre_populate = Student_info.query.filter_by(username=logged_in_user[0]).first()
         form = StudentInfoForm(obj=pre_populate)
         cgpa_combined = pre_populate.cgpa
@@ -340,7 +350,7 @@ def student_profile():
             print("Database commit Success")
 
             return redirect(url_for('dashboard_student'))
-        return render_template('dashboard_student_info.html', form=form, user_name=user_name, cgpa_combined=cgpa_combined, sp_dpt=pre_populate.special_dept)
+        return render_template('dashboard_student_info.html', form=form, user_name=user_name, cgpa_combined=cgpa_combined, sp_dpt=pre_populate.special_dept, branches=branches)
 
 
 @app.route('/dashboard_admin', methods=['GET', 'POST'])
