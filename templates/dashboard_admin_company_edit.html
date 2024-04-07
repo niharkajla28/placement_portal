@@ -399,7 +399,9 @@
                                         {{ form.company_name(placeholder="Company Name" ,class="form-control form-control-user", id="company_name")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "company_name" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -408,7 +410,9 @@
                                         {{ form.website_link(placeholder="Company Website link" ,class="form-control form-control-user", id="website_link")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "website_link" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -417,7 +421,9 @@
                                         {{ form.profile(placeholder="Job Profile" ,class="form-control form-control-user", id="profile")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "profile" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -426,7 +432,9 @@
                                         {{ form.marks_10(placeholder="Minimum 10th Percentage" ,class="form-control form-control-user", id="marks_10")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "marks_10" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -435,7 +443,9 @@
                                         {{ form.marks_12(placeholder="Minimum 12th Percentage" ,class="form-control form-control-user", id="marks_12")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "marks_12" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -444,7 +454,9 @@
                                         {{ form.cgpa(placeholder="Minimum CGPA" ,class="form-control form-control-user", id="cgpa")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "cgpa" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -453,7 +465,9 @@
                                         {{ form.backlogs(placeholder="Number of Backlogs" ,class="form-control form-control-user", id="backlogs")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "backlogs" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -462,7 +476,9 @@
                                         {{ form.ctc(placeholder="CTC" ,class="form-control form-control-user", id="ctc")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "ctc" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -471,7 +487,9 @@
                                         {{ form.offer_type(placeholder="I/P/I+P" ,class="form-control form-control-user", id="offer_type")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "offer_type" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -480,7 +498,9 @@
                                         {{ form.stipend(placeholder="Stipend" ,class="form-control form-control-user", id="stipend")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "stipend" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -489,7 +509,9 @@
                                         {{ form.duration(placeholder="Duration in months" ,class="form-control form-control-user", id="duration")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "duration" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -498,16 +520,20 @@
                                         {{ form.location(placeholder="Company Location" ,class="form-control form-control-user", id="location")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "location" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
                                     <div class="form-group">
                                         Start date/Month of Internship/Placement:
-                                        {{ form.start_date(placeholder="Start date/Month of Internship/Placement" ,class="form-control form-control-user", id="start_Date")  }}
+                                        {{ form.start_date(placeholder="Start date/Month of Internship/Placement" ,class="form-control form-control-user", id="start_date")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "start_date" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -516,7 +542,20 @@
                                         {{ form.ppo(placeholder="Yes/No" ,class="form-control form-control-user", id="ppo")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "ppo" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
+                                            </small>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        Eligible Branches ({{branch_names}}):
+                                        {{ form.eligible_branch(placeholder="Eligible Branches" ,class="form-control form-control-user", id="eligible_branch")  }}
+                                         {% for field, errors in form.errors.items() %}
+                                             <small class="form-text text-muted ">
+                                                 {% if field == "eligible_branch" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -525,7 +564,9 @@
                                         {{ form.active_reg(placeholder="Yes/No" ,class="form-control form-control-user", id="active_reg")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "active_reg" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>
@@ -534,7 +575,9 @@
                                         {{ form.last_date(placeholder="Last Date" ,class="form-control form-control-user", id="last_date")  }}
                                          {% for field, errors in form.errors.items() %}
                                              <small class="form-text text-muted ">
-                                                {{ ', '.join(errors) }}
+                                                {% if field == "last_date" %}
+                                                    {{ ', '.join(errors) }}
+                                                 {% endif %}
                                             </small>
                                         {% endfor %}
                                     </div>

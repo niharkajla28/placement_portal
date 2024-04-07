@@ -148,7 +148,7 @@ class Company(db.Model, UserMixin):
     ppo = db.Column(db.Boolean, nullable=True)
     active_reg = db.Column(db.Boolean, nullable=False)
     last_date = db.Column(db.Date, nullable=True)
-
+    eligible_branch = db.Column(db.String(200), nullable=True)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=30)])
@@ -222,8 +222,24 @@ class AddNewCompany(FlaskForm):
     ppo = BooleanField()
     active_reg = BooleanField(default=False)
     last_date = DateField(format='%Y-%m-%d')
+    eligible_branch = StringField(validators=[Length(max=200)])
 
     submit = SubmitField("Submit")
+
+    def validate_eligible_branch(self, eligible_branch):
+        branches = Branch.query
+        branch_list = list()
+        for item in branches:
+            branch_list.append(item.special)
+        print(branch_list)
+        eligible = str(eligible_branch.data)
+        print(eligible)
+        entered_data = eligible.split(',')
+        print(entered_data)
+        for item in entered_data:
+
+            if item not in branch_list:
+                raise ValidationError("Eligible Branches entered does not match the valid branches in system")
 
 
 class AdminInfo(FlaskForm):
@@ -372,6 +388,19 @@ def add_company():
         return redirect(url_for('logout'))
     else:
         user_name = current_profile()
+        branches = Branch.query
+        branch_names = ""
+        flag_branch = True
+
+        for item in branches:
+
+            # print(item.special)
+            if flag_branch:
+                branch_names = str(item.special)
+                flag_branch = False
+            else:
+                branch_names = branch_names + "," + str(item.special)
+
         form = AddNewCompany()
         print(f'User name: {logged_in_user[0]}')
         if form.validate_on_submit():
@@ -393,12 +422,14 @@ def add_company():
             company.ppo = form.ppo.data
             company.active_reg = form.active_reg.data
             company.last_date = form.last_date.data
+            company.eligible_branch = form.eligible_branch.data
             db.session.add(company)
             db.session.commit()
             print("Database commit Success")
 
             return redirect(url_for('dashboard_admin'))
-        return render_template('dashboard_admin_company_reg.html', form=form, user_name=user_name)
+
+        return render_template('dashboard_admin_company_reg.html', form=form, user_name=user_name, branch_names=branch_names)
 
 
 @app.route('/dashboard_admin/edit_company/<company_id>', methods=['GET', 'POST'])
@@ -410,6 +441,19 @@ def edit_company(company_id):
     else:
         user_name = current_profile()
         pre_populate = Company.query.filter_by(cno=company_id).first()
+        branches = Branch.query
+        branch_names = ""
+        flag_branch = True
+
+        for item in branches:
+
+            # print(item.special)
+            if flag_branch:
+                branch_names = str(item.special)
+                flag_branch = False
+            else:
+                branch_names = branch_names + "," + str(item.special)
+
         # print(pre_populate.company_name)
         form = AddNewCompany(obj=pre_populate)
         print(f'User name: {logged_in_user[0]}')
@@ -433,12 +477,14 @@ def edit_company(company_id):
             company.ppo = form.ppo.data
             company.active_reg = form.active_reg.data
             company.last_date = form.last_date.data
+            company.eligible_branch = form.eligible_branch.data
             db.session.add(company)
             db.session.commit()
             print("Database commit Success")
 
             return redirect(url_for('dashboard_admin'))
-        return render_template('dashboard_admin_company_edit.html', form=form, user_name=user_name)
+
+        return render_template('dashboard_admin_company_edit.html', form=form, user_name=user_name, branch_names=branch_names)
 
 
 @app.route('/dashboard_student/student_company_view/student_company_registered/<company_id>', methods=['GET', 'POST'])
