@@ -314,7 +314,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                    <h1 class="h3 mb-2 text-gray-800">{{company.company_name}}</h1>
 
 
                     <!-- DataTales Example -->
@@ -327,79 +327,49 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>Edit Details</th>
-                                            <th>Registered Students</th>
-                                            <th>Website</th>
-                                            <th>Profile</th>
-                                            <th>Min CGPA</th>
-                                            <th>Min 10th</th>
-                                            <th>Min 12th</th>
-                                            <th>Backlogs</th>
-                                            <th>CTC</th>
-                                            <th>Offer Type</th>
-                                            <th>Stipend</th>
-                                            <th>Duration</th>
-                                            <th>Location</th>
-                                            <th>Start Date</th>
-                                            <th>PPO</th>
-                                            <th>Last Date of Registration</th>
-                                            <th>Eligible Branches</th>
+                                            <th>Student Name</th>
+                                            <th>View Student details</th>
+                                            <th>College ID</th>
+                                            <th>Gender</th>
+                                            <th>Specialization</th>
+                                            <th>CGPA</th>
+                                            <th>Red Flags</th>
 
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>Edit Details</th>
-                                            <th>Registered Students</th>
-                                            <th>Website</th>
-                                            <th>Profile</th>
-                                            <th>Min CGPA</th>
-                                            <th>Min 10th</th>
-                                            <th>Min 12th</th>
-                                            <th>Backlogs</th>
-                                            <th>CTC</th>
-                                            <th>Offer Type</th>
-                                            <th>Stipend</th>
-                                            <th>Duration</th>
-                                            <th>Location</th>
-                                            <th>Start Date</th>
-                                            <th>PPO</th>
-                                            <th>Last Date of Registration</th>
-                                            <th>Eligible Branches</th>
+                                            <th>Student Name</th>
+                                            <th>View Student details</th>
+                                            <th>College ID</th>
+                                            <th>Gender</th>
+                                            <th>Specialization</th>
+                                            <th>CGPA</th>
+                                            <th>Red Flags</th>
+
+
 
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for stu in registered_stu %}
+                                        {% for student in student_list %}
                                             <tr>
-                                                <td>{{}}</td>
+                                                <td>{{student.name}}</td>
+
                                                 <td>
-                                                    <a href="{{url_for('admin_company_viewer', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
+                                                    <a href="{{url_for('admin_student_viewer', sid=student.sid)}}" class="btn btn-primary btn-icon-split">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-arrow-right"></i>
                                                             </span>
                                                             <span class="text">View</span>
                                                         </a>
                                                 </td>
-                                                <td>{{ user.website_link }}</td>
-                                                <td>{{ user.profile }}</td>
-                                                <td>{{ user.cgpa }}</td>
-                                                <td>{{ user.marks_10 }}</td>
-                                                <td>{{ user.marks_12 }}</td>
-                                                <td>{{ user.backlogs }}</td>
-                                                <td>{{ user.ctc }}</td>
-                                                <td>{{ user.offer_type }}</td>
-                                                <td>{{ user.stipend }}</td>
-                                                <td>{{ user.duration }}</td>
-                                                <td>{{ user.location }}</td>
-                                                <td>{{ user.start_date }}</td>
-                                                <td>{{ user.ppo }}</td>
-                                                <td>{{user.last_date}}</td>
-                                                <th>{{user.eligible_branch}}</th>
+                                                <td>{{ student.college_id }}</td>
+                                                <td>{{ student.gender }}</td>
+                                                <td>{{ student.special_dept }}</td>
+                                                <td>{{ student.cgpa }}</td>
+                                                <td>{{ student.red_flag }}</td>
+
 
 
                                             </tr>

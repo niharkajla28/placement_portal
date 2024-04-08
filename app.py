@@ -589,10 +589,36 @@ def admin_company_viewer(company_id):
         company = Company().query.filter_by(cno=company_id).first()
 
         registered_stu = Student_company_registration().query.filter_by(cno=company_id)
-        student = Student_info.query.filter_by(sid=registered_stu.sid)
+        student_list = list()
+        for item in registered_stu:
+            student = Student_info.query.filter_by(sid=item.sid).first()
+            student_list.append(student)
+        print(student_list)
 
 
-    return render_template('admin_company_reg_students.html', company=company, student=student, registered_stu=registered_stu)
+    return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu)
+
+
+@app.route('/dashboard_admin/admin_company_view/admin_student_viewer<sid>')
+@login_required
+def admin_student_viewer(sid):
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Admin company registered students view')
+        company = Company().query.filter_by(cno=company_id).first()
+
+        registered_stu = Student_company_registration().query.filter_by(cno=company_id)
+        student_list = list()
+        for item in registered_stu:
+            student = Student_info.query.filter_by(sid=item.sid).first()
+            student_list.append(student)
+        print(student_list)
+
+
+    return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu)
+
 
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():
