@@ -575,8 +575,9 @@ def student_filter():
         return redirect(url_for('logout'))
     else:
         print('Student Filter')
+        user_name = current_profile()
 
-    return render_template('admin_student_filter.html')
+    return render_template('admin_student_filter.html', user_name=user_name)
 
 @app.route('/dashboard_admin/admin_company_view/admin_company_reg_viewer/<company_id>')
 @login_required
@@ -586,6 +587,7 @@ def admin_company_viewer(company_id):
         return redirect(url_for('logout'))
     else:
         print('Admin company registered students view')
+        user_name = current_profile()
         company = Company().query.filter_by(cno=company_id).first()
 
         registered_stu = Student_company_registration().query.filter_by(cno=company_id)
@@ -596,28 +598,41 @@ def admin_company_viewer(company_id):
         print(student_list)
 
 
-    return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu)
+    return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu, user_name=user_name)
 
 
-@app.route('/dashboard_admin/admin_company_view/admin_student_viewer<sid>')
+@app.route('/dashboard_admin/admin_company_view/admin_student_viewer/<sid>')
 @login_required
 def admin_student_viewer(sid):
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if not user.admin:
         return redirect(url_for('logout'))
     else:
-        print('Admin company registered students view')
-        company = Company().query.filter_by(cno=company_id).first()
+        print('Admin Student viewer')
+        user_name = current_profile()
+        student = Student_info().query.filter_by(sid=sid).first()
 
-        registered_stu = Student_company_registration().query.filter_by(cno=company_id)
-        student_list = list()
-        for item in registered_stu:
-            student = Student_info.query.filter_by(sid=item.sid).first()
-            student_list.append(student)
-        print(student_list)
+    return render_template('admin_student_viewer.html', student=student, user_name=user_name)
 
 
-    return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu)
+@app.route('/dashboard_admin/admin_company_view/admin_student_viewer/red_flag_updater/<sid>')
+@login_required
+def admin_red_flag(sid):
+    print('In admin_red_flag')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Red flag added')
+        user_name = current_profile()
+        student = Student_info().query.filter_by(sid=sid).first()
+        student.red_flag = student.red_flag + 1
+        db.session.add(student)
+        db.session.commit()
+        print('Red Flag committed')
+
+
+    return redirect(url_for('admin_student_viewer', sid=sid))
 
 
 @app.route('/faker1', methods=['GET', 'POST'])
