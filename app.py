@@ -631,7 +631,6 @@ def admin_red_flag(sid):
         db.session.commit()
         print('Red Flag committed')
 
-
     return redirect(url_for('admin_student_viewer', sid=sid))
 
 
