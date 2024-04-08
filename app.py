@@ -125,9 +125,9 @@ class Student_info(db.Model, UserMixin):
     cgpa_2 = db.Column(db.String(5), nullable=True)
     cgpa_3 = db.Column(db.String(5), nullable=True)
     cgpa_4 = db.Column(db.String(5), nullable=True)
-    cgpa = db.Column(db.String(5), nullable=True)
+    cgpa = db.Column(db.String(5), nullable=True, default=0)
     backlogs = db.Column(db.String(5), nullable=True)
-    red_flag = db.Column(db.Integer)
+    red_flag = db.Column(db.Integer, default=0)
 
 class Company(db.Model, UserMixin):
     __tablename__ = "company"
@@ -570,16 +570,29 @@ def student_company_view():
 @app.route('/dashboard_admin/student_filter', methods=['GET', 'POST'])
 @login_required
 def student_filter():
-    print('Student Filter')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Student Filter')
 
     return render_template('admin_student_filter.html')
 
 @app.route('/dashboard_admin/admin_company_view/admin_company_reg_viewer/<company_id>')
 @login_required
 def admin_company_viewer(company_id):
-    print('Admin company registered students view')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Admin company registered students view')
+        company = Company().query.filter_by(cno=company_id).first()
 
-    return render_template('admin_company_reg_students.html')
+        registered_stu = Student_company_registration().query.filter_by(cno=company_id)
+        student = Student_info.query.filter_by(sid=registered_stu.sid)
+
+
+    return render_template('admin_company_reg_students.html', company=company, student=student, registered_stu=registered_stu)
 
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():
