@@ -567,7 +567,12 @@ def student_company_view():
     return render_template('student_company_view.html', users=users, user_name=user_name)
 
 
+@app.route('/dashboard_admin/student_filter', methods=['GET', 'POST'])
+@login_required
+def student_filter():
+    print('Student Filter')
 
+    return render_template('admin_student_filter.html')
 
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():
