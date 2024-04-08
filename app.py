@@ -574,6 +574,13 @@ def student_filter():
 
     return render_template('admin_student_filter.html')
 
+@app.route('/dashboard_admin/admin_company_view/admin_company_reg_viewer/<company_id>')
+@login_required
+def admin_company_viewer(company_id):
+    print('Admin company registered students view')
+
+    return render_template('admin_company_reg_students.html')
+
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():
     fake = Faker()
