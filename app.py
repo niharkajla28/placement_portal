@@ -595,33 +595,33 @@ def student_filter():
             final_query = Student_info.query.order_by(Student_info.sid.desc())
             print(final_query)
             if len(form.name.data) > 0:
-                final_query = final_query.filter_by(name=form.name.data)
+                final_query = final_query.filter(Student_info.name == form.name.data)
 
             if len(form.college_id.data) > 0:
-                final_query = final_query.filter_by(college_id=form.college_id.data)
+                final_query = final_query.filter(Student_info.college_id == form.college_id.data)
 
             if len(form.gender.data) > 0:
-                final_query = final_query.filter_by(gender=form.gender.data)
+                final_query = final_query.filter(Student_info.gender == form.gender.data)
 
             if len(form.marks_10.data) > 0:
-                final_query = final_query.filter_by(marks_10=form.marks_10.data)
+                final_query = final_query.filter(Student_info.marks_10 >= form.marks_10.data)
 
             if len(form.marks_12.data) > 0:
-                final_query = final_query.filter_by(marks_12=form.marks_12.data)
+                final_query = final_query.filter(Student_info.marks_12 >= form.marks_12.data)
 
             if len(form.special_dept.data) > 0:
-                final_query = final_query.filter_by(special_dept=form.special_dept.data)
+                final_query = final_query.filter(Student_info.special_dept == form.special_dept.data)
 
             if len(form.cgpa.data) > 0:
-                final_query = final_query.filter_by(cgpa=form.cgpa.data)
+                final_query = final_query.filter(Student_info.cgpa >= form.cgpa.data)
 
             if len(form.backlogs.data) > 0:
-                final_query = final_query.filter_by(backlogs=form.backlogs.data)
-
+                final_query = final_query.filter(Student_info.backlogs <= form.backlogs.data)
+            # print(final_query)
             print(final_query.all())
+            query_filter = final_query.all()
 
-
-
+            return render_template('admin_student_filter.html', user_name=user_name, form=form, query_filter=query_filter)
             # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
             # query = session.query(User)
             # for attr, value in my_filters.iteritems():
