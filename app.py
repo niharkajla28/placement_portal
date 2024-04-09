@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from sqlalchemy import desc
+from sqlalchemy import desc, or_, and_
 from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
 from wtforms import EmailField, DateField
@@ -246,6 +246,19 @@ class AdminInfo(FlaskForm):
     username = StringField(validators=[Length(max=200)])
     admin_name = StringField(validators=[Length(max=200)])
     submit = SubmitField("Submit")
+
+
+class FilterForm(FlaskForm):
+    name = StringField(validators=[Length(max=100)])
+    college_id = StringField(validators=[Length(max=11)])
+    gender = StringField(validators=[Length(max=10)])
+    marks_10 = StringField(validators=[Length(max=10)])
+    marks_12 = StringField(validators=[Length(max=10)])
+    special_dept = StringField(validators=[Length(max=200)])
+    cgpa = StringField(validators=[Length(max=5)])
+    backlogs = StringField(validators=[Length(max=5)])
+    submit = SubmitField("Submit")
+
 
 @app.route('/')
 def home():
@@ -576,8 +589,46 @@ def student_filter():
     else:
         print('Student Filter')
         user_name = current_profile()
+        form = FilterForm()
+        print(f'Username: {logged_in_user[0]}')
+        if form.validate_on_submit():
+            values = dict()
+            if len(form.name.data) > 0:
+                values['name'] = form.name.data
 
-    return render_template('admin_student_filter.html', user_name=user_name)
+            if len(form.college_id.data) > 0:
+                values['college_id'] = form.college_id.data
+
+            if len(form.gender.data) > 0:
+                values['gender'] = form.gender.data
+
+            if len(form.gender.data) > 0:
+                values['marks_10'] = form.marks_10.data
+
+            if len(form.gender.data) > 0:
+                values['marks_12'] = form.marks_12.data
+
+            if len(form.gender.data) > 0:
+                values['special_dept'] = form.special_dept.data
+
+            if len(form.gender.data) > 0:
+                values['cgpa'] = form.cgpa.data
+
+            if len(form.gender.data) > 0:
+                values['backlogs'] = form.backlogs.data
+
+            print(values)
+
+
+
+            # query1 = Student_info.select().where(and_(*values))
+            # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
+            # query = session.query(User)
+            # for attr, value in my_filters.iteritems():
+            #     query = query.filter(getattr(User, attr) == value)
+            # # now we can run the query
+            # results = query.all()
+    return render_template('admin_student_filter.html', user_name=user_name, form=form)
 
 @app.route('/dashboard_admin/admin_company_view/admin_company_reg_viewer/<company_id>')
 @login_required
@@ -615,10 +666,10 @@ def admin_student_viewer(sid):
     return render_template('admin_student_viewer.html', student=student, user_name=user_name)
 
 
-@app.route('/dashboard_admin/admin_company_view/admin_student_viewer/red_flag_updater/<sid>')
+@app.route('/dashboard_admin/admin_company_view/admin_student_viewer/red_flag_up/<sid>')
 @login_required
-def admin_red_flag(sid):
-    print('In admin_red_flag')
+def admin_red_flag_up(sid):
+    print('In admin_red_flag_up')
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if not user.admin:
         return redirect(url_for('logout'))
@@ -627,6 +678,26 @@ def admin_red_flag(sid):
         user_name = current_profile()
         student = Student_info().query.filter_by(sid=sid).first()
         student.red_flag = student.red_flag + 1
+        db.session.add(student)
+        db.session.commit()
+        print('Red Flag committed')
+
+    return redirect(url_for('admin_student_viewer', sid=sid))
+
+@app.route('/dashboard_admin/admin_company_view/admin_student_viewer/red_flag_down/<sid>')
+@login_required
+def admin_red_flag_down(sid):
+    print('In admin_red_flag_down')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Red flag removed')
+        user_name = current_profile()
+        student = Student_info().query.filter_by(sid=sid).first()
+        student.red_flag = student.red_flag - 1
+        if student.red_flag < 0:
+            student.red_flag = 0
         db.session.add(student)
         db.session.commit()
         print('Red Flag committed')

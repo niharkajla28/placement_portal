@@ -383,8 +383,10 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">{{student.name}}</h1>
 
-                            <a href="{{url_for('admin_red_flag', sid=student.sid)}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                            <a href="{{url_for('admin_red_flag_up', sid=student.sid)}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                             <i class="fas text-white-50"></i>Give Redflag</a>
+                            <a href="{{url_for('admin_red_flag_down', sid=student.sid)}}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                            <i class="fas text-white-50"></i>Relax Redflag</a>
                     </div>
 
                     <!-- Content Row -->
