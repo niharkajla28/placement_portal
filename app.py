@@ -592,36 +592,36 @@ def student_filter():
         form = FilterForm()
         print(f'Username: {logged_in_user[0]}')
         if form.validate_on_submit():
-            values = dict()
+            final_query = Student_info.query.order_by(Student_info.sid.desc())
+            print(final_query)
             if len(form.name.data) > 0:
-                values['name'] = form.name.data
+                final_query = final_query.filter_by(name=form.name.data)
 
             if len(form.college_id.data) > 0:
-                values['college_id'] = form.college_id.data
+                final_query = final_query.filter_by(college_id=form.college_id.data)
 
             if len(form.gender.data) > 0:
-                values['gender'] = form.gender.data
+                final_query = final_query.filter_by(gender=form.gender.data)
 
-            if len(form.gender.data) > 0:
-                values['marks_10'] = form.marks_10.data
+            if len(form.marks_10.data) > 0:
+                final_query = final_query.filter_by(marks_10=form.marks_10.data)
 
-            if len(form.gender.data) > 0:
-                values['marks_12'] = form.marks_12.data
+            if len(form.marks_12.data) > 0:
+                final_query = final_query.filter_by(marks_12=form.marks_12.data)
 
-            if len(form.gender.data) > 0:
-                values['special_dept'] = form.special_dept.data
+            if len(form.special_dept.data) > 0:
+                final_query = final_query.filter_by(special_dept=form.special_dept.data)
 
-            if len(form.gender.data) > 0:
-                values['cgpa'] = form.cgpa.data
+            if len(form.cgpa.data) > 0:
+                final_query = final_query.filter_by(cgpa=form.cgpa.data)
 
-            if len(form.gender.data) > 0:
-                values['backlogs'] = form.backlogs.data
+            if len(form.backlogs.data) > 0:
+                final_query = final_query.filter_by(backlogs=form.backlogs.data)
 
-            print(values)
+            print(final_query.all())
 
 
 
-            # query1 = Student_info.select().where(and_(*values))
             # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
             # query = session.query(User)
             # for attr, value in my_filters.iteritems():
