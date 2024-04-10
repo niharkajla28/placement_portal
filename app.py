@@ -11,6 +11,14 @@ from flask_bcrypt import Bcrypt
 from http import HTTPStatus
 from faker import Faker
 from datetime import date
+import httplib2
+import os
+import oauth2client
+from oauth2client import client, tools, file
+import base64
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from apiclient import errors, discovery
 
 
 logged_in_user = list()
@@ -24,6 +32,58 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+
+SCOPES = 'https://www.googleapis.com/auth/gmail.send'
+CLIENT_SECRET_FILE = 'credentials.json'
+APPLICATION_NAME = 'lab1'
+
+
+def get_credentials():
+    home_dir = os.path.expanduser('~')
+    credential_dir = os.path.join(home_dir, '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir, 'gmail-python-email-send.json')
+    store = oauth2client.file.Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        credentials = tools.run_flow(flow, store)
+        print('Storing credentials to ' + credential_path)
+    return credentials
+
+
+def SendMessage(sender, to, subject, msgHtml, msgPlain):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('gmail', 'v1', http=http)
+    message1 = CreateMessage(sender, to, subject, msgHtml, msgPlain)
+    SendMessageInternal(service, "me", message1)
+
+
+def SendMessageInternal(service, user_id, message):
+    try:
+        message = (service.users().messages().send(userId=user_id, body=message).execute())
+        print('Message Id: %s' % message['id'])
+        return message
+    except errors.HttpError as error:
+        print('An error occurred: %s' % error)
+
+
+def CreateMessage(sender, to, subject, msgHtml, msgPlain):
+    # msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart('mixed')
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = to
+    msg.attach(MIMEText(msgPlain, 'plain'))
+    msg.attach(MIMEText(msgHtml, 'html'))
+    raw = base64.urlsafe_b64encode(msg.as_bytes())
+    raw = raw.decode()
+    body = {'raw': raw}
+    return body
 
 
 @login_manager.user_loader
@@ -149,6 +209,14 @@ class Company(db.Model, UserMixin):
     active_reg = db.Column(db.Boolean, nullable=False)
     last_date = db.Column(db.Date, nullable=True)
     eligible_branch = db.Column(db.String(200), nullable=True)
+
+
+class CompanyMail(FlaskForm):
+    company_name = StringField(validators=[InputRequired(), Length(min=0, max=200)])
+    subject = StringField(validators=[InputRequired(), Length(min=5, max=400)])
+    message = StringField(validators=[InputRequired(), Length(min=5, max=1500)])
+    submit = SubmitField("Send Mail")
+
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=30)])
@@ -704,6 +772,57 @@ def admin_red_flag_down(sid):
 
     return redirect(url_for('admin_student_viewer', sid=sid))
 
+
+@app.route('/dashboard_admin/', mehtods=['POST', 'GET'])
+@login_required
+def registered_mail():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Student Filter')
+        user_name = current_profile()
+        form = Company()
+        print(f'Username: {logged_in_user[0]}')
+        if form.validate_on_submit():
+            final_query = Student_info.query.order_by(Student_info.sid.desc())
+            print(final_query)
+            if len(form.name.data) > 0:
+                final_query = final_query.filter(Student_info.name == form.name.data)
+
+            if len(form.college_id.data) > 0:
+                final_query = final_query.filter(Student_info.college_id == form.college_id.data)
+
+            if len(form.gender.data) > 0:
+                final_query = final_query.filter(Student_info.gender == form.gender.data)
+
+            if len(form.marks_10.data) > 0:
+                final_query = final_query.filter(Student_info.marks_10 >= form.marks_10.data)
+
+            if len(form.marks_12.data) > 0:
+                final_query = final_query.filter(Student_info.marks_12 >= form.marks_12.data)
+
+            if len(form.special_dept.data) > 0:
+                final_query = final_query.filter(Student_info.special_dept == form.special_dept.data)
+
+            if len(form.cgpa.data) > 0:
+                final_query = final_query.filter(Student_info.cgpa >= form.cgpa.data)
+
+            if len(form.backlogs.data) > 0:
+                final_query = final_query.filter(Student_info.backlogs <= form.backlogs.data)
+            # print(final_query)
+            print(final_query.all())
+            query_filter = final_query.all()
+
+            return render_template('admin_mail_company_reg.html', user_name=user_name, form=form,
+                                   query_filter=query_filter)
+            # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
+            # query = session.query(User)
+            # for attr, value in my_filters.iteritems():
+            #     query = query.filter(getattr(User, attr) == value)
+            # # now we can run the query
+            # results = query.all()
+    return render_template('admin_mail_company_reg.html', user_name=user_name, form=form)
 
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():
