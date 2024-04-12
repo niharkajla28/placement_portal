@@ -73,8 +73,8 @@ def SendMessageInternal(service, user_id, message):
 
 
 def CreateMessage(sender, to, subject, msgHtml, msgPlain):
-    # msg = MIMEMultipart('alternative')
-    msg = MIMEMultipart('mixed')
+    msg = MIMEMultipart('alternative')
+    # msg = MIMEMultipart('mixed')
     msg['Subject'] = subject
     msg['From'] = sender
     msg['To'] = to
@@ -117,7 +117,6 @@ def status_updater():
             print('Successfully committed to Database')
 
 
-
 class User(db.Model, UserMixin):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
@@ -142,6 +141,16 @@ class Student_company_registration(db.Model, UserMixin):
     company = db.relationship("Company", backref=backref("company", uselist=False))
     active_reg = db.Column(db.Boolean, nullable=True)
     registration_time = db.Column(db.DateTime)
+
+
+class MailDetails(db.Model, UserMixin):
+    __tablename__ = "mail_details"
+    mid = db.Column(db.Integer, primary_key=True)
+    cno = db.Column(db.Integer, db.ForeignKey('company.cno'))
+    # company = db.relationship("Company", backref=backref("company", uselist=False))
+    subject = db.Column(db.String(400), nullable=True)
+    message = db.Column(db.String(1500), nullable=True)
+    timestamp = db.Column(db.DateTime)
 
 class Login_log(db.Model, UserMixin):
     __tablename__ = 'login_log'
@@ -212,9 +221,9 @@ class Company(db.Model, UserMixin):
 
 
 class CompanyMail(FlaskForm):
-    company_name = StringField(validators=[InputRequired(), Length(min=0, max=200)])
-    subject = StringField(validators=[InputRequired(), Length(min=5, max=400)])
-    message = StringField(validators=[InputRequired(), Length(min=5, max=1500)])
+    cno = StringField(validators=[InputRequired()])
+    subject = StringField(validators=[Length(min=5, max=400)])
+    message = StringField(validators=[Length(min=5, max=1500)])
     submit = SubmitField("Send Mail")
 
 
@@ -707,9 +716,9 @@ def admin_company_viewer(company_id):
     else:
         print('Admin company registered students view')
         user_name = current_profile()
-        company = Company().query.filter_by(cno=company_id).first()
+        company = Company.query.filter_by(cno=company_id).first()
 
-        registered_stu = Student_company_registration().query.filter_by(cno=company_id)
+        registered_stu = Student_company_registration.query.filter_by(cno=company_id)
         student_list = list()
         for item in registered_stu:
             student = Student_info.query.filter_by(sid=item.sid).first()
@@ -744,7 +753,7 @@ def admin_red_flag_up(sid):
     else:
         print('Red flag added')
         user_name = current_profile()
-        student = Student_info().query.filter_by(sid=sid).first()
+        student = Student_info.query.filter_by(sid=sid).first()
         student.red_flag = student.red_flag + 1
         db.session.add(student)
         db.session.commit()
@@ -762,7 +771,7 @@ def admin_red_flag_down(sid):
     else:
         print('Red flag removed')
         user_name = current_profile()
-        student = Student_info().query.filter_by(sid=sid).first()
+        student = Student_info.query.filter_by(sid=sid).first()
         student.red_flag = student.red_flag - 1
         if student.red_flag < 0:
             student.red_flag = 0
@@ -773,56 +782,48 @@ def admin_red_flag_down(sid):
     return redirect(url_for('admin_student_viewer', sid=sid))
 
 
-@app.route('/dashboard_admin/', mehtods=['POST', 'GET'])
+@app.route('/dashboard_admin/send_mail', methods=['POST', 'GET'])
 @login_required
 def registered_mail():
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if not user.admin:
         return redirect(url_for('logout'))
     else:
-        print('Student Filter')
+
         user_name = current_profile()
-        form = Company()
+        companies = Company.query
+        form = CompanyMail()
+        print("Inside registered_mail function")
         print(f'Username: {logged_in_user[0]}')
         if form.validate_on_submit():
-            final_query = Student_info.query.order_by(Student_info.sid.desc())
-            print(final_query)
-            if len(form.name.data) > 0:
-                final_query = final_query.filter(Student_info.name == form.name.data)
+            print("Inside validate on submit")
+            mailer = MailDetails()
+            mailer.cno = form.cno.data
+            mailer.subject = form.subject.data
+            mailer.message = form.message.data
+            print(form.cno.data)
+            db.session.add(mailer)
+            db.session.commit()
+            print("Mail saved in database.")
+            registered_students = Student_company_registration.query.filter_by(cno=mailer.cno)
+            # print(registered_students)
+            stu_emails = list()
+            company_message = Company.query.filter_by(cno=mailer.cno).first()
+            for student in registered_students:
+                stu = Student_info.query.filter_by(sid=student.sid).first()
+                print(f"Sending mail to: {stu.email_1}")
+                stu_emails.append(stu.email_1)
 
-            if len(form.college_id.data) > 0:
-                final_query = final_query.filter(Student_info.college_id == form.college_id.data)
+                subject_mail = company_message.company_name + " : " + mailer.subject
+                message_mail = "Dear " + stu.name + ",\n" + mailer.message
+                SendMessage("niharamazon5005@gmail.com", stu.email_1, subject_mail, message_mail, message_mail)
+            print(f'Stu_emails: {stu_emails}')
 
-            if len(form.gender.data) > 0:
-                final_query = final_query.filter(Student_info.gender == form.gender.data)
 
-            if len(form.marks_10.data) > 0:
-                final_query = final_query.filter(Student_info.marks_10 >= form.marks_10.data)
+            # for item in stu_emails:
+            #     SendMessage("niharamazon5005@gmail.com", item, subject_mail, mailer.message, mailer.message)
+    return render_template('admin_mail_company_reg.html', user_name=user_name, form=form, companies=companies)
 
-            if len(form.marks_12.data) > 0:
-                final_query = final_query.filter(Student_info.marks_12 >= form.marks_12.data)
-
-            if len(form.special_dept.data) > 0:
-                final_query = final_query.filter(Student_info.special_dept == form.special_dept.data)
-
-            if len(form.cgpa.data) > 0:
-                final_query = final_query.filter(Student_info.cgpa >= form.cgpa.data)
-
-            if len(form.backlogs.data) > 0:
-                final_query = final_query.filter(Student_info.backlogs <= form.backlogs.data)
-            # print(final_query)
-            print(final_query.all())
-            query_filter = final_query.all()
-
-            return render_template('admin_mail_company_reg.html', user_name=user_name, form=form,
-                                   query_filter=query_filter)
-            # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
-            # query = session.query(User)
-            # for attr, value in my_filters.iteritems():
-            #     query = query.filter(getattr(User, attr) == value)
-            # # now we can run the query
-            # results = query.all()
-    return render_template('admin_mail_company_reg.html', user_name=user_name, form=form)
 
 @app.route('/faker1', methods=['GET', 'POST'])
 def faker1():

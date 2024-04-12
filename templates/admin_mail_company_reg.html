@@ -340,120 +340,40 @@
                                 <div class="form-group col-md-6">
 
                                   Company Name:
-                                    <select class="form-control" aria-label=".form-select-lg example" name="special_dept" id="special_dept">
-                                            <option  value="{{sp_dpt}}" selected>{{sp_dpt}}</option>
-                                            {% for branch in branches %}
+                                    <select class="form-control" aria-label=".form-select-lg example" name="cno" id="cno">
+                                            <option  value="0" selected>Select Company</option>
+                                            {% for comp in companies %}
 
-                                              <option value="{{branch.special}}">{{branch.full_name}}</option>
+                                              <option value="{{comp.cno}}">{{comp.company_name}}</option>
 
                                             {% endfor %}
-                                        </select>
+
+                                    </select>
+                                    <div class="form-group">
+                                     Subject:
+                                        {{ form.subject(placeholder="Enter subject" ,class="form-control form-control-user", id="subject")  }}
+                                             {% for field, errors in form.errors.items() %}
+                                                 <small class="form-text text-muted ">
+                                                    {% if field == "subject" %}
+                                                        {{ ', '.join(errors) }}
+                                                     {% endif %}
+                                                </small>
+                                            {% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                     Message:
+                                        {{ form.message(placeholder="Enter mail message" ,class="form-control form-control-user", id="message")  }}
+                                             {% for field, errors in form.errors.items() %}
+                                                 <small class="form-text text-muted ">
+                                                    {% if field == "message" %}
+                                                        {{ ', '.join(errors) }}
+                                                     {% endif %}
+                                                </small>
+                                            {% endfor %}
+                                    </div>
 
                                 </div>
-                                <div class="form-group col-md-6">
-                                  College id:
-                                    {{ form.college_id(placeholder="College ID" ,class="form-control form-control-user", id="college_id")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {% if field == "name" %}
-                                                    {{ ', '.join(errors) }}
-                                                 {% endif %}
-                                            </small>
-                                        {% endfor %}
                                 </div>
-                                </div>
-                                <div class="form-group">
-                                    Gender:
-                                    {{ form.gender(placeholder="Gender" ,class="form-control form-control-user", id="gender")  }}
-                                         {% for field, errors in form.errors.items() %}
-                                             <small class="form-text text-muted ">
-                                                {% if field == "name" %}
-                                                    {{ ', '.join(errors) }}
-                                                 {% endif %}
-                                            </small>
-                                        {% endfor %}
-                                </div>
-                                <div class="form-group">
-                                     Marks 10th:
-                                        {{ form.marks_10(placeholder="Marks 10th" ,class="form-control form-control-user", id="marks_10")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
-                                <div class="form-group">
-                                     Marks 12th:
-                                        {{ form.marks_12(placeholder="Marks 12th" ,class="form-control form-control-user", id="marks_12")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
-                                <div class="form-group">
-                                     Specialization:
-                                        {{ form.special_dept(placeholder="Specialization" ,class="form-control form-control-user", id="special_dept")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
-                                <div class="form-group">
-                                     CGPA:
-                                        {{ form.cgpa(placeholder="CGPA" ,class="form-control form-control-user", id="cgpa")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
-                                <div class="form-group">
-                                     Backlogs:
-                                        {{ form.backlogs(placeholder="Backlogs" ,class="form-control form-control-user", id="backlogs")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
-<!--                                <div class="form-row">-->
-<!--                                    <div class="form-group col-md-6">-->
-<!--                                      <label for="inputCity">City</label>-->
-<!--                                      <input type="text" class="form-control" id="inputCity">-->
-<!--                                    </div>-->
-<!--                                    <div class="form-group col-md-4">-->
-<!--                                      <label for="inputState">Students Registered in Company</label>-->
-<!--                                      <select id="inputState" class="form-control">-->
-<!--                                        <option selected>Choose...</option>-->
-<!--                                        <option>...</option>-->
-<!--                                      </select>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-group col-md-2">-->
-<!--                                      <label for="inputZip">Zip</label>-->
-<!--                                      <input type="text" class="form-control" id="inputZip">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-group">-->
-<!--                                    <div class="form-check">-->
-<!--                                      <input class="form-check-input" type="checkbox" id="gridCheck">-->
-<!--                                      <label class="form-check-label" for="gridCheck">-->
-<!--                                        Check me out-->
-<!--                                      </label>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                  <button type="submit" class="btn btn-primary">Submit</button>-->
                                 {{ form.submit(class="btn btn-primary btn-user btn-block")  }}
                             </form>
 
@@ -461,72 +381,8 @@
                         </div>
                     </div>
                     <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>College ID</th>
-                                            <th>Gender</th>
-                                            <th>Specialization</th>
-                                            <th>10th Marks</th>
-                                            <th>12th Marks</th>
-                                            <th>CGPA</th>
-                                            <th>Backlogs</th>
-                                            <th>Red Flags</th>
-                                            <th>Category</th>
 
 
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>College ID</th>
-                                            <th>Gender</th>
-                                            <th>Specialization</th>
-                                            <th>10th Marks</th>
-                                            <th>12th Marks</th>
-                                            <th>CGPA</th>
-                                            <th>Backlogs</th>
-                                            <th>Red Flags</th>
-                                            <th>Category</th>
-
-
-
-
-
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        {% for stu in query_filter %}
-
-                                            <tr>
-                                                <td>{{ stu.name }}</td>
-                                                <td>{{ stu.college_id }}</td>
-                                                <td>{{ stu.gender }}</td>
-                                                <td>{{ stu.special_dept }}</td>
-                                                <td>{{ stu.marks_10 }}</td>
-                                                <td>{{ stu.marks_12 }}</td>
-                                                <td>{{ stu.cgpa }}</td>
-                                                <td>{{ stu.backlogs }}</td>
-                                                <td>{{ stu.red_flag }}</td>
-                                                <td>{{ stu.category}}</td>
-
-
-
-                                            </tr>
-                                          {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
