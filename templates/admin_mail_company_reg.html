@@ -377,7 +377,8 @@
                                 {{ form.submit(class="btn btn-primary btn-user btn-block")  }}
                             </form>
 
-
+                            {{ ckeditor.load() }}
+                            {{ ckeditor.config(name='message') }}
                         </div>
                     </div>
                     <!-- DataTales Example -->
@@ -447,6 +448,7 @@
 
     <!-- Page level custom scripts -->
     <script src="{{url_for('static', filename='js/demo/datatables-demo.js')}}"></script>
+    <script src="https://cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
 
 </body>
 

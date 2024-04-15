@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from sqlalchemy import desc, or_, and_
+from flask_ckeditor import CKEditorField
 from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
 from wtforms import EmailField, DateField
@@ -19,6 +20,9 @@ import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from apiclient import errors, discovery
+from flask_ckeditor import CKEditor
+from spire.xls import *
+from spire.xls.common import *
 
 
 logged_in_user = list()
@@ -27,6 +31,8 @@ bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/placement_portal"
 app.config['SECRET_KEY'] = 'thisislocked'
 db = SQLAlchemy(app)
+app.config['CKEDITOR_PKG_TYPE'] = 'full-all'
+ckeditor = CKEditor(app)
 
 
 login_manager = LoginManager()
@@ -149,7 +155,7 @@ class MailDetails(db.Model, UserMixin):
     cno = db.Column(db.Integer, db.ForeignKey('company.cno'))
     # company = db.relationship("Company", backref=backref("company", uselist=False))
     subject = db.Column(db.String(400), nullable=True)
-    message = db.Column(db.String(1500), nullable=True)
+    message = db.Column(db.String(20000), nullable=True)
     timestamp = db.Column(db.DateTime)
 
 class Login_log(db.Model, UserMixin):
@@ -223,7 +229,8 @@ class Company(db.Model, UserMixin):
 class CompanyMail(FlaskForm):
     cno = StringField(validators=[InputRequired()])
     subject = StringField(validators=[Length(min=5, max=400)])
-    message = StringField(validators=[Length(min=5, max=1500)])
+    # message = StringField(validators=[Length(min=5, max=1500)])
+    message = CKEditorField(validators=[Length(min=5, max=20000)])
     submit = SubmitField("Send Mail")
 
 
