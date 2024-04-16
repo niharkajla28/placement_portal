@@ -1,8 +1,8 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, request, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from sqlalchemy import desc, or_, and_
+from sqlalchemy import desc, or_, and_, asc
 from flask_ckeditor import CKEditorField
 from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
@@ -333,12 +333,13 @@ class AdminInfo(FlaskForm):
 
 
 class FilterForm(FlaskForm):
+    cno = StringField()
     name = StringField(validators=[Length(max=100)])
     college_id = StringField(validators=[Length(max=11)])
     gender = StringField(validators=[Length(max=10)])
     marks_10 = StringField(validators=[Length(max=10)])
     marks_12 = StringField(validators=[Length(max=10)])
-    special_dept = StringField(validators=[Length(max=200)])
+    special_dept = StringField()
     cgpa = StringField(validators=[Length(max=5)])
     backlogs = StringField(validators=[Length(max=5)])
     submit = SubmitField("Submit")
@@ -673,11 +674,14 @@ def student_filter():
     else:
         print('Student Filter')
         user_name = current_profile()
+        branches = Branch.query.order_by(Branch.full_name.asc())
+        companies = Company.query.order_by(Company.company_name.asc())
         form = FilterForm()
         print(f'Username: {logged_in_user[0]}')
         if form.validate_on_submit():
             final_query = Student_info.query.order_by(Student_info.sid.desc())
             print(final_query)
+
             if len(form.name.data) > 0:
                 final_query = final_query.filter(Student_info.name == form.name.data)
 
@@ -693,7 +697,7 @@ def student_filter():
             if len(form.marks_12.data) > 0:
                 final_query = final_query.filter(Student_info.marks_12 >= form.marks_12.data)
 
-            if len(form.special_dept.data) > 0:
+            if len(form.special_dept.data) > 0 and form.special_dept.data != '0':
                 final_query = final_query.filter(Student_info.special_dept == form.special_dept.data)
 
             if len(form.cgpa.data) > 0:
@@ -702,17 +706,39 @@ def student_filter():
             if len(form.backlogs.data) > 0:
                 final_query = final_query.filter(Student_info.backlogs <= form.backlogs.data)
             # print(final_query)
-            print(final_query.all())
+            print(f"Final Query for students{final_query.all()}")
             query_filter = final_query.all()
+            print(f'Length of query filter: {len(query_filter)}')
+            print(f'Lenth of cno {len(form.cno.data)}')
+            student_list = set()
+            # if len(form.cno.data) != 0 and len(query_filter) == 0:
+            #     company = Company.query.filter_by(cno=form.cno.data).first()
+            #     registered_stu = Student_company_registration.query.filter_by(cno=form.cno.data)
+            #
+            #     for item in registered_stu:
+            #         student = Student_info.query.filter_by(sid=item.sid).first()
+            #         student_list.add(student)
+            #     query_filter = student_list
 
-            return render_template('admin_student_filter.html', user_name=user_name, form=form, query_filter=query_filter)
+
+
+            print(f"Student_list as per company: {student_list}")
+            return render_template('admin_student_filter.html', user_name=user_name, form=form, query_filter=query_filter, branches=branches, companies=companies)
             # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
             # query = session.query(User)
             # for attr, value in my_filters.iteritems():
             #     query = query.filter(getattr(User, attr) == value)
             # # now we can run the query
             # results = query.all()
-    return render_template('admin_student_filter.html', user_name=user_name, form=form)
+    return render_template('admin_student_filter.html', user_name=user_name, form=form, branches=branches, companies=companies)
+
+
+@app.route('/download_excel')
+@login_required
+def download_excel():
+    path = 'DatabaseToExcel.xlsx'
+    return send_file(path, as_attachment=True)
+
 
 @app.route('/dashboard_admin/admin_company_view/admin_company_reg_viewer/<company_id>')
 @login_required
@@ -879,6 +905,54 @@ def faker2():
         db.session.add(item)
         db.session.commit()
         print("Database commit Success")
+    return render_template('index.html')
+
+
+@app.route('/excel', methods=['GET', 'POST'])
+def excel_generator():
+    # Create a workbook
+    workbook = Workbook()
+    workbook.Version = ExcelVersion.Version2016
+    # Get the first worksheet of the file
+
+    worksheet = workbook.Worksheets[0]
+    # workbook.Worksheets.Add('New')
+    worksheet.Name = f"First"
+    # Get the headers of the retrieved data
+    headers = ['Name', 'College ID', 'Contact number', 'Email']
+
+    # Write the headers to specific cells of the worksheet
+    for col_num, header in enumerate(headers, 1):
+        worksheet.Range[1, col_num].Text = header
+        # Set font style for headers
+        worksheet.Range[1, col_num].Style.Font.IsBold = True
+    # user = Student_info.query.order_by(Student_info.sid.desc())
+    # total = 0
+    # for item in user:
+    #     total = total + 1
+    # print(total)
+    users = Student_info.query.with_entities(Student_info.name, Student_info.college_id, Student_info.mobile_no, Student_info.email_1)
+    print(users)
+
+    row_num = 2
+    for user in users:
+
+        col_num = 1
+        worksheet.Range[row_num, col_num].Text = str(user.name)
+        col_num = col_num + 1
+        worksheet.Range[row_num, col_num].Text = str(user.college_id)
+        col_num = col_num + 1
+        worksheet.Range[row_num, col_num].Text = str(user.mobile_no)
+        col_num = col_num + 1
+        worksheet.Range[row_num, col_num].Text = str(user.email_1)
+        col_num = col_num + 1
+        row_num = row_num + 1
+
+                # Autofit column widths
+    worksheet.AllocatedRange.AutoFitColumns()
+
+    # Save the Excel file to a specific location
+    workbook.SaveToFile('DatabaseToExcel.xlsx', ExcelVersion.Version2016)
     return render_template('index.html')
 
 

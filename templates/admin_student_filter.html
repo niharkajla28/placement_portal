@@ -338,7 +338,34 @@
                                 {{ form.csrf_token }}
                                 <div class="form-row">
                                 <div class="form-group col-md-6">
+                                    Company Name:
+                                    <select class="form-control" aria-label=".form-select-lg example" name="cno" id="cno">
+                                            <option value="0" selected>Select Company</option>
+                                            {% for comp in companies %}
 
+                                              <option value="{{comp.cno}}">{{comp.company_name}}</option>
+
+                                            {% endfor %}
+                                    </select>
+                                </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                            Specialization:
+                                        <select class="form-control" aria-label=".form-select-lg example" name="special_dept" id="special_dept">
+                                            <option value="0">Select Specialization</option>
+                                            {% for branch in branches %}
+
+                                              <option value="{{branch.special}}">{{branch.full_name}}</option>
+
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                                <div class="form-row">
+                                <div class="form-group">
                                   Student Name:
                                     {{ form.name(placeholder="Name" ,class="form-control form-control-user", id="name")  }}
                                          {% for field, errors in form.errors.items() %}
@@ -350,7 +377,8 @@
                                         {% endfor %}
 
                                 </div>
-                                <div class="form-group col-md-6">
+
+                                <div class="form-group">
                                   College id:
                                     {{ form.college_id(placeholder="College ID" ,class="form-control form-control-user", id="college_id")  }}
                                          {% for field, errors in form.errors.items() %}
@@ -361,7 +389,7 @@
                                             </small>
                                         {% endfor %}
                                 </div>
-                                </div>
+
                                 <div class="form-group">
                                     Gender:
                                     {{ form.gender(placeholder="Gender" ,class="form-control form-control-user", id="gender")  }}
@@ -395,17 +423,7 @@
                                                 </small>
                                             {% endfor %}
                                 </div>
-                                <div class="form-group">
-                                     Specialization:
-                                        {{ form.special_dept(placeholder="Specialization" ,class="form-control form-control-user", id="special_dept")  }}
-                                             {% for field, errors in form.errors.items() %}
-                                                 <small class="form-text text-muted ">
-                                                    {% if field == "name" %}
-                                                        {{ ', '.join(errors) }}
-                                                     {% endif %}
-                                                </small>
-                                            {% endfor %}
-                                </div>
+
                                 <div class="form-group">
                                      CGPA:
                                         {{ form.cgpa(placeholder="CGPA" ,class="form-control form-control-user", id="cgpa")  }}
@@ -455,10 +473,16 @@
 <!--                                </div>-->
 <!--                                  <button type="submit" class="btn btn-primary">Submit</button>-->
                                 {{ form.submit(class="btn btn-primary btn-user btn-block")  }}
+                                </div>
+
                             </form>
 
 
                         </div>
+                    </div>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+
+                        <a class="btn btn-success" href="{{url_for('download_excel')}}">Download in excel file</a>
                     </div>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
