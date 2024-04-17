@@ -680,6 +680,8 @@ def student_filter():
         print(f'Username: {logged_in_user[0]}')
         if form.validate_on_submit():
             final_query = Student_info.query.order_by(Student_info.sid.desc())
+
+
             print(final_query)
 
             if len(form.name.data) > 0:
@@ -706,11 +708,26 @@ def student_filter():
             if len(form.backlogs.data) > 0:
                 final_query = final_query.filter(Student_info.backlogs <= form.backlogs.data)
             # print(final_query)
-            print(f"Final Query for students{final_query.all()}")
-            query_filter = final_query.all()
-            print(f'Length of query filter: {len(query_filter)}')
-            print(f'Lenth of cno {len(form.cno.data)}')
+            # query_filter = final_query.all()
             student_list = set()
+            flag_comp = True
+            if form.cno.data != '0':
+                query_filter = final_query.all()
+                stu_com = Student_company_registration.query.filter_by(cno=form.cno.data)
+                print(stu_com)
+                company_cno = Company.query.filter_by(cno=form.cno.data).first()
+                flag_comp = False
+                for item in stu_com:
+                    for stu in query_filter:
+                        if item.sid == stu.sid:
+                            student_list.add(stu)
+
+                # q = final_query.join(stu_com, final_query.sid == stu_com.sid)
+                # print(q)
+                # for item in stu_com:
+
+                    # final_query = final_query.filter(Student_info.sid == item.sid)
+
             # if len(form.cno.data) != 0 and len(query_filter) == 0:
             #     company = Company.query.filter_by(cno=form.cno.data).first()
             #     registered_stu = Student_company_registration.query.filter_by(cno=form.cno.data)
@@ -719,11 +736,157 @@ def student_filter():
             #         student = Student_info.query.filter_by(sid=item.sid).first()
             #         student_list.add(student)
             #     query_filter = student_list
+            if flag_comp:
+                print(f"Final Query for students{final_query.all()}")
+                query_filter = final_query.all()
+                print(f'query filter: {query_filter}')
 
+                workbook = Workbook()
+                workbook.Version = ExcelVersion.Version2016
+                # Get the first worksheet of the file
 
+                worksheet = workbook.Worksheets[0]
+                # workbook.Worksheets.Add('New')
+                worksheet.Name = f"Student Data"
+                # Get the headers of the retrieved data
+                headers = ['Name', 'College ID', 'Contact number', 'Email', 'Date of Birth', 'Gender', 'Program',
+                           'Specialization', '10th Marks', '12th Marks', 'CGPA', 'Backlogs', 'Red Flags',
+                           'Category']
 
-            print(f"Student_list as per company: {student_list}")
-            return render_template('admin_student_filter.html', user_name=user_name, form=form, query_filter=query_filter, branches=branches, companies=companies)
+                # Write the headers to specific cells of the worksheet
+                for col_num, header in enumerate(headers, 1):
+                    worksheet.Range[1, col_num].Text = header
+                    # Set font style for headers
+                    worksheet.Range[1, col_num].Style.Font.IsBold = True
+                # user = Student_info.query.order_by(Student_info.sid.desc())
+                # total = 0
+                # for item in user:
+                #     total = total + 1
+                # print(total)
+                # users = Student_info.query.with_entities(Student_info.name, Student_info.college_id,
+                #                                          Student_info.mobile_no, Student_info.email_1,
+                #                                          Student_info.dob, Student_info.gender, Student_info.program,
+                #                                          Student_info.special_dept, Student_info.marks_10,
+                #                                          Student_info.marks_12, Student_info.cgpa, Student_info.backlogs,
+                #                                          Student_info.red_flag, Student_info.category)
+                print(query_filter)
+
+                row_num = 2
+                for user in query_filter:
+                    col_num = 1
+                    worksheet.Range[row_num, col_num].Text = str(user.name)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.college_id)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.mobile_no)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.email_1)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.dob)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.gender)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.program)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.special_dept)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.marks_10)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.marks_12)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.cgpa)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.backlogs)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.red_flag)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.category)
+                    col_num = col_num + 1
+                    row_num = row_num + 1
+                    # Autofit column widths
+                worksheet.AllocatedRange.AutoFitColumns()
+                # Save the Excel file to a specific location
+                workbook.SaveToFile('DatabaseToExcel.xlsx', ExcelVersion.Version2016)
+
+                return render_template('admin_student_filter.html', user_name=user_name, form=form,
+                                       query_filter=query_filter, branches=branches, companies=companies)
+
+            else:
+                query_filter = student_list
+                print(query_filter)
+                print(f"Student_list as per company: {student_list}")
+
+                workbook = Workbook()
+                workbook.Version = ExcelVersion.Version2016
+                # Get the first worksheet of the file
+
+                worksheet = workbook.Worksheets[0]
+                # workbook.Worksheets.Add('New')
+                worksheet.Name = f"{company_cno.company_name}"
+                # Get the headers of the retrieved data
+                headers = ['Name', 'College ID', 'Contact number', 'Email', 'Date of Birth', 'Gender', 'Program',
+                           'Specialization', '10th Marks', '12th Marks', 'CGPA', 'Backlogs', 'Red Flags',
+                           'Category']
+
+                # Write the headers to specific cells of the worksheet
+                for col_num, header in enumerate(headers, 1):
+                    worksheet.Range[1, col_num].Text = header
+                    # Set font style for headers
+                    worksheet.Range[1, col_num].Style.Font.IsBold = True
+                # user = Student_info.query.order_by(Student_info.sid.desc())
+                # total = 0
+                # for item in user:
+                #     total = total + 1
+                # print(total)
+                # users = Student_info.query.with_entities(Student_info.name, Student_info.college_id,
+                #                                          Student_info.mobile_no, Student_info.email_1,
+                #                                          Student_info.dob, Student_info.gender, Student_info.program,
+                #                                          Student_info.special_dept, Student_info.marks_10,
+                #                                          Student_info.marks_12, Student_info.cgpa, Student_info.backlogs,
+                #                                          Student_info.red_flag, Student_info.category)
+                print(query_filter)
+
+                row_num = 2
+                for user in query_filter:
+                    col_num = 1
+                    worksheet.Range[row_num, col_num].Text = str(user.name)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.college_id)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.mobile_no)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.email_1)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.dob)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.gender)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.program)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.special_dept)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.marks_10)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.marks_12)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.cgpa)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.backlogs)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.red_flag)
+                    col_num = col_num + 1
+                    worksheet.Range[row_num, col_num].Text = str(user.category)
+                    col_num = col_num + 1
+                    row_num = row_num + 1
+                    # Autofit column widths
+                worksheet.AllocatedRange.AutoFitColumns()
+                # Save the Excel file to a specific location
+                workbook.SaveToFile('DatabaseToExcel.xlsx', ExcelVersion.Version2016)
+
+                return render_template('admin_student_filter.html', user_name=user_name, form=form,
+                                       query_filter=query_filter, branches=branches, companies=companies,
+                                       company_cno=company_cno)
+
             # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
             # query = session.query(User)
             # for attr, value in my_filters.iteritems():
@@ -731,6 +894,14 @@ def student_filter():
             # # now we can run the query
             # results = query.all()
     return render_template('admin_student_filter.html', user_name=user_name, form=form, branches=branches, companies=companies)
+
+
+@app.route('/dashboard_admin/student_filter/excel_gen', methods=['GET', 'POST'])
+@login_required
+def admin_filter_excel_gen():
+    # Create a workbook
+
+    return render_template('index.html')
 
 
 @app.route('/download_excel')

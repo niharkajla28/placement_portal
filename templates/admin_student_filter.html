@@ -353,7 +353,7 @@
                                     <div class="form-group col-md-6">
                                             Specialization:
                                         <select class="form-control" aria-label=".form-select-lg example" name="special_dept" id="special_dept">
-                                            <option value="0">Select Specialization</option>
+                                            <option value="0" selected>Select Specialization</option>
                                             {% for branch in branches %}
 
                                               <option value="{{branch.special}}">{{branch.full_name}}</option>
@@ -482,12 +482,16 @@
                     </div>
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
-                        <a class="btn btn-success" href="{{url_for('download_excel')}}">Download in excel file</a>
+                        <a class="btn btn-success" href="{{url_for('download_excel')}}">Download as excel file</a>
                     </div>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            {% if company_cno%}
+                            <h6 class="m-0 font-weight-bold text-primary">{{company_cno.company_name}}</h6>
+                            {% else %}
+                            <h6 class="m-0 font-weight-bold text-primary">Data</h6>
+                            {% endif %}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -496,7 +500,11 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>College ID</th>
+                                            <th>Mobile Number</th>
+                                            <th>Email</th>
+                                            <th>Date of Birth</th>
                                             <th>Gender</th>
+                                            <th>Program</th>
                                             <th>Specialization</th>
                                             <th>10th Marks</th>
                                             <th>12th Marks</th>
@@ -512,7 +520,11 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>College ID</th>
+                                            <th>Mobile Number</th>
+                                            <th>Email</th>
+                                            <th>Date of Birth</th>
                                             <th>Gender</th>
+                                            <th>Program</th>
                                             <th>Specialization</th>
                                             <th>10th Marks</th>
                                             <th>12th Marks</th>
@@ -533,7 +545,11 @@
                                             <tr>
                                                 <td>{{ stu.name }}</td>
                                                 <td>{{ stu.college_id }}</td>
+                                                <td>{{ stu.mobile_no }}</td>
+                                                <td>{{ stu.email_1 }}</td>
+                                                <td>{{ stu.dob }}</td>
                                                 <td>{{ stu.gender }}</td>
+                                                <td>{{ stu.program }}</td>
                                                 <td>{{ stu.special_dept }}</td>
                                                 <td>{{ stu.marks_10 }}</td>
                                                 <td>{{ stu.marks_12 }}</td>
