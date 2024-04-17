@@ -650,7 +650,7 @@ def student_company_view():
     if user.admin:
         return redirect(url_for('logout'))
     else:
-        users = Company.query
+        users = Company.query.order_by(Company.company_name.desc())
         # users = Company.query.order_by(desc(Company.ctc))
         user_name = current_profile()
         # existing_list = list()
