@@ -158,6 +158,16 @@ class MailDetails(db.Model, UserMixin):
     message = db.Column(db.String(20000), nullable=True)
     timestamp = db.Column(db.DateTime)
 
+
+class OfferDetails(db.Model, UserMixin):
+    __tablename__ = "student_offer"
+    so_id = db.Column(db.Integer, primary_key=True)
+    cno = db.Column(db.Integer, db.ForeignKey('company.cno'))
+    username = db.Column(db.String(30), nullable=True)
+    offer_type = db.Column(db.String(50), nullable=True)
+    added_time = db.Column(db.DateTime)
+
+
 class Login_log(db.Model, UserMixin):
     __tablename__ = 'login_log'
     log_id = db.Column(db.Integer, primary_key=True)
@@ -744,7 +754,6 @@ def student_filter():
                 workbook = Workbook()
                 workbook.Version = ExcelVersion.Version2016
                 # Get the first worksheet of the file
-
                 worksheet = workbook.Worksheets[0]
                 # workbook.Worksheets.Add('New')
                 worksheet.Name = f"Student Data"
@@ -758,17 +767,7 @@ def student_filter():
                     worksheet.Range[1, col_num].Text = header
                     # Set font style for headers
                     worksheet.Range[1, col_num].Style.Font.IsBold = True
-                # user = Student_info.query.order_by(Student_info.sid.desc())
-                # total = 0
-                # for item in user:
-                #     total = total + 1
-                # print(total)
-                # users = Student_info.query.with_entities(Student_info.name, Student_info.college_id,
-                #                                          Student_info.mobile_no, Student_info.email_1,
-                #                                          Student_info.dob, Student_info.gender, Student_info.program,
-                #                                          Student_info.special_dept, Student_info.marks_10,
-                #                                          Student_info.marks_12, Student_info.cgpa, Student_info.backlogs,
-                #                                          Student_info.red_flag, Student_info.category)
+
                 print(query_filter)
 
                 row_num = 2
@@ -833,17 +832,7 @@ def student_filter():
                     worksheet.Range[1, col_num].Text = header
                     # Set font style for headers
                     worksheet.Range[1, col_num].Style.Font.IsBold = True
-                # user = Student_info.query.order_by(Student_info.sid.desc())
-                # total = 0
-                # for item in user:
-                #     total = total + 1
-                # print(total)
-                # users = Student_info.query.with_entities(Student_info.name, Student_info.college_id,
-                #                                          Student_info.mobile_no, Student_info.email_1,
-                #                                          Student_info.dob, Student_info.gender, Student_info.program,
-                #                                          Student_info.special_dept, Student_info.marks_10,
-                #                                          Student_info.marks_12, Student_info.cgpa, Student_info.backlogs,
-                #                                          Student_info.red_flag, Student_info.category)
+
                 print(query_filter)
 
                 row_num = 2
@@ -887,12 +876,7 @@ def student_filter():
                                        query_filter=query_filter, branches=branches, companies=companies,
                                        company_cno=company_cno)
 
-            # my_filters = {'name_last': 'Duncan', 'name_first': 'Iain'}
-            # query = session.query(User)
-            # for attr, value in my_filters.iteritems():
-            #     query = query.filter(getattr(User, attr) == value)
-            # # now we can run the query
-            # results = query.all()
+
     return render_template('admin_student_filter.html', user_name=user_name, form=form, branches=branches, companies=companies)
 
 
@@ -931,6 +915,28 @@ def admin_company_viewer(company_id):
 
 
     return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu, user_name=user_name)
+
+
+@app.route('/dashboard_admin/admin_company_view/admin_offer_view/<company_id>')
+@login_required
+def admin_offer_view(company_id):
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Admin company registered students view')
+        user_name = current_profile()
+        company = Company.query.filter_by(cno=company_id).first()
+
+        registered_stu = Student_company_registration.query.filter_by(cno=company_id)
+        student_list = list()
+        for item in registered_stu:
+            student = Student_info.query.filter_by(sid=item.sid).first()
+            student_list.append(student)
+        print(student_list)
+
+
+    return render_template('admin_offer_view.html', company=company, student_list=student_list, registered_stu=registered_stu, user_name=user_name)
 
 
 @app.route('/dashboard_admin/admin_company_view/admin_student_viewer/<sid>')

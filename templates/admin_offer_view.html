@@ -69,11 +69,6 @@
                     <span>View Companies</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{url_for('student_filter')}}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Student Filter</span></a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{{url_for('registered_mail')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Company Registered Student Mail</span></a>
@@ -324,110 +319,62 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                    <h1 class="h3 mb-2 text-gray-800">{{company.company_name}}</h1>
 
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">{{company.company_name}}</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>Edit Details</th>
-                                            <th>Registered Students</th>
-                                            <th>Add offer</th>
-                                            <th>Website</th>
-                                            <th>Profile</th>
-                                            <th>Min CGPA</th>
-                                            <th>Min 10th</th>
-                                            <th>Min 12th</th>
-                                            <th>Backlogs</th>
-                                            <th>CTC</th>
-                                            <th>Offer Type</th>
-                                            <th>Stipend</th>
-                                            <th>Duration</th>
-                                            <th>Location</th>
-                                            <th>Start Date</th>
-                                            <th>PPO</th>
-                                            <th>Last Date of Registration</th>
-                                            <th>Eligible Branches</th>
+                                            <th>Student Name</th>
+                                            <th>View Student details</th>
+                                            <th>College ID</th>
+                                            <th>Gender</th>
+                                            <th>Specialization</th>
+                                            <th>CGPA</th>
+                                            <th>Red Flags</th>
 
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Company</th>
-                                            <th>Registration Status</th>
-                                            <th>Edit Details</th>
-                                            <th>Add offer</th>
-                                            <th>Registered Students</th>
-                                            <th>Website</th>
-                                            <th>Profile</th>
-                                            <th>Min CGPA</th>
-                                            <th>Min 10th</th>
-                                            <th>Min 12th</th>
-                                            <th>Backlogs</th>
-                                            <th>CTC</th>
-                                            <th>Offer Type</th>
-                                            <th>Stipend</th>
-                                            <th>Duration</th>
-                                            <th>Location</th>
-                                            <th>Start Date</th>
-                                            <th>PPO</th>
-                                            <th>Last Date of Registration</th>
-                                            <th>Eligible Branches</th>
+                                            <th>Student Name</th>
+                                            <th>View Student details</th>
+                                            <th>College ID</th>
+                                            <th>Gender</th>
+                                            <th>Specialization</th>
+                                            <th>CGPA</th>
+                                            <th>Red Flags</th>
+
+
 
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for user in users %}
+                                        {% for student in student_list %}
                                             <tr>
-                                                <td>{{ user.company_name }}</td>
-                                                {% if user.active_reg == True %}
-                                                    <td bgcolor="green" class="text-white">Active</td>
-                                                {% else %}
-                                                    <td bgcolor="red" class="text-white">De-active</td>
-                                                {% endif %}
+                                                <td>{{student.name}}</td>
+
                                                 <td>
-                                                    <a href="{{url_for('edit_company', company_id=user.cno)}}">Edit</a>
-                                                </td>
-                                                <td>
-                                                    <a href="{{url_for('admin_company_viewer', company_id=user.cno)}}" class="btn btn-primary btn-icon-split">
+                                                    <a href="{{url_for('admin_student_viewer', sid=student.sid)}}" class="btn btn-primary btn-icon-split">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-arrow-right"></i>
                                                             </span>
                                                             <span class="text">View</span>
                                                         </a>
                                                 </td>
-                                                <td>
-                                                    <a href="{{url_for('admin_company_viewer', company_id=user.cno)}}" class="btn btn-info btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-arrow-right"></i>
-                                                            </span>
-                                                            <span class="text">Offers</span>
-                                                        </a>
-                                                </td>
-                                                <td>{{ user.website_link }}</td>
-                                                <td>{{ user.profile }}</td>
-                                                <td>{{ user.cgpa }}</td>
-                                                <td>{{ user.marks_10 }}</td>
-                                                <td>{{ user.marks_12 }}</td>
-                                                <td>{{ user.backlogs }}</td>
-                                                <td>{{ user.ctc }}</td>
-                                                <td>{{ user.offer_type }}</td>
-                                                <td>{{ user.stipend }}</td>
-                                                <td>{{ user.duration }}</td>
-                                                <td>{{ user.location }}</td>
-                                                <td>{{ user.start_date }}</td>
-                                                <td>{{ user.ppo }}</td>
-                                                <td>{{user.last_date}}</td>
-                                                <th>{{user.eligible_branch}}</th>
+                                                <td>{{ student.college_id }}</td>
+                                                <td>{{ student.gender }}</td>
+                                                <td>{{ student.special_dept }}</td>
+                                                <td>{{ student.cgpa }}</td>
+                                                <td>{{ student.red_flag }}</td>
+
 
 
                                             </tr>
