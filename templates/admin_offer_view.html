@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Admin Company View</title>
+    <title>Admin Offer View</title>
 
     <!-- Custom fonts for this template -->
     <link href="{{url_for('static', filename='vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -67,6 +67,11 @@
                 <a class="nav-link" href="{{url_for('admin_company_view')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>View Companies</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('student_filter')}}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Student Filter</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{url_for('registered_mail')}}">
@@ -333,7 +338,15 @@
                                     <thead>
                                         <tr>
                                             <th>Student Name</th>
-                                            <th>View Student details</th>
+                                            {% if company.offer_type == 'P' %}
+                                                <th>Placement</th>
+                                            {% endif %}
+                                            {% if company.offer_type == 'P+I' %}
+                                                <th>Placement+Internship</th>
+                                            {% endif %}
+                                            {% if company.offer_type == 'I' %}
+                                                <th>Internship</th>
+                                            {% endif %}
                                             <th>College ID</th>
                                             <th>Gender</th>
                                             <th>Specialization</th>
@@ -345,7 +358,15 @@
                                     <tfoot>
                                         <tr>
                                             <th>Student Name</th>
-                                            <th>View Student details</th>
+                                            {% if company.offer_type == 'P' %}
+                                                <th>Placement</th>
+                                            {% endif %}
+                                            {% if company.offer_type == 'P+I' %}
+                                                <th>Placement+Internship</th>
+                                            {% endif %}
+                                            {% if company.offer_type == 'I' %}
+                                                <th>Internship</th>
+                                            {% endif %}
                                             <th>College ID</th>
                                             <th>Gender</th>
                                             <th>Specialization</th>
@@ -357,18 +378,96 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for student in student_list %}
+                                        {% for student, offer in student_list %}
                                             <tr>
                                                 <td>{{student.name}}</td>
+                                                    {% if company.offer_type == 'P' %}
+                                                    <td>
 
+                                                        {% if offer.offered==False and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                            <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Offer')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                                            <i class="fas text-white-50"></i>Offer</a>
+                                                        {% elif offer.offered==True and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                            <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                                                            <i class="fas text-white-50"></i>Offered</a>
+                                                        <div class="my-2"></div>
+                                                            <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                            <i class="fas text-white-50"></i>Revoke</a>
+                                                        {% elif offer.offered==True and offer.accepted==True and offer.rejected==False and offer.revoked==False %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                                            <i class="fas text-white-50"></i>Accepted by Student</a>
+                                                        <div class="my-2"></div>
+                                                            <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                            <i class="fas text-white-50"></i>Revoke</a>
+                                                        {% elif offer.offered==True and offer.accepted==False and offer.rejected==True and offer.revoked==False %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">
+                                                            <i class="fas text-white-50"></i>Rejected by Student</a>
+                                                        {% elif offer.revoked==True %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                                                            <i class="fas text-white-50"></i>Revoked by Admin</a>
+                                                        {% else %}
+                                                            Contact System Admin
+                                                        {% endif %}
+                                                    </td>
+
+                                                    {% endif %}
+                                                {% if company.offer_type == 'P+I' %}
                                                 <td>
-                                                    <a href="{{url_for('admin_student_viewer', sid=student.sid)}}" class="btn btn-primary btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-arrow-right"></i>
-                                                            </span>
-                                                            <span class="text">View</span>
-                                                        </a>
+                                                    {% if offer.offered==False and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Offer')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                                        <i class="fas text-white-50"></i>Offer</a>
+                                                    {% elif offer.offered==True and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                        <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                                                        <i class="fas text-white-50"></i>Offered</a>
+                                                    <div class="my-2"></div>
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoke</a>
+                                                    {% elif offer.offered==True and offer.accepted==True and offer.rejected==False and offer.revoked==False %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                                        <i class="fas text-white-50"></i>Accepted by Student</a>
+                                                    <div class="my-2"></div>
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoke</a>
+                                                    {% elif offer.offered==True and offer.accepted==False and offer.rejected==True and offer.revoked==False %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">
+                                                        <i class="fas text-white-50"></i>Rejected by Student</a>
+                                                    {% elif offer.revoked==True %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoked by Admin</a>
+                                                    {% else %}
+                                                        Contact System Admin
+                                                    {% endif %}
                                                 </td>
+                                                {% endif %}
+                                                {% if company.offer_type == 'I' %}
+                                                <td>
+                                                    {% if offer.offered==False and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Offer')}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                                        <i class="fas text-white-50"></i>Offer</a>
+                                                    {% elif offer.offered==True and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                        <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                                                        <i class="fas text-white-50"></i>Offered</a>
+                                                    <div class="my-2"></div>
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoke</a>
+                                                    {% elif offer.offered==True and offer.accepted==True and offer.rejected==False and offer.revoked==False %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                                        <i class="fas text-white-50"></i>Accepted by Student</a>
+                                                    <div class="my-2"></div>
+                                                        <a href="{{url_for('offered', company_id=company.cno, sid=student.sid, button_press='Revoke')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoke</a>
+                                                    {% elif offer.offered==True and offer.accepted==False and offer.rejected==True and offer.revoked==False %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">
+                                                        <i class="fas text-white-50"></i>Rejected by Student</a>
+                                                    {% elif offer.revoked==True %}
+                                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                                                        <i class="fas text-white-50"></i>Revoked by Admin</a>
+                                                    {% else %}
+                                                        Contact System Admin
+                                                    {% endif %}
+                                                </td>
+                                                {% endif %}
+
                                                 <td>{{ student.college_id }}</td>
                                                 <td>{{ student.gender }}</td>
                                                 <td>{{ student.special_dept }}</td>

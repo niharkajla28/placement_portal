@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash, sen
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from sqlalchemy import desc, or_, and_, asc
+from sqlalchemy import desc, or_, and_, asc, join
 from flask_ckeditor import CKEditorField
 from sqlalchemy.orm import backref
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, BooleanField, RadioField
@@ -163,8 +163,13 @@ class OfferDetails(db.Model, UserMixin):
     __tablename__ = "student_offer"
     so_id = db.Column(db.Integer, primary_key=True)
     cno = db.Column(db.Integer, db.ForeignKey('company.cno'))
-    username = db.Column(db.String(30), nullable=True)
+    sid = db.Column(db.Integer, db.ForeignKey('student_table.sid'))
+    username = db.Column(db.String(30), nullable=False)
     offer_type = db.Column(db.String(50), nullable=True)
+    offered = db.Column(db.Boolean, nullable=False, default=False)
+    accepted = db.Column(db.Boolean, nullable=False, default=False)
+    rejected = db.Column(db.Boolean, nullable=False, default=False)
+    revoked = db.Column(db.Boolean, nullable=False, default=False)
     added_time = db.Column(db.DateTime)
 
 
@@ -612,6 +617,14 @@ def student_company_registered(company_id):
         db.session.add(stu_comp_reg)
         db.session.commit()
         print('student company registration database updated')
+        stu_offer = OfferDetails()
+        stu_offer.cno = company.cno
+        stu_offer.sid = student.sid
+        stu_offer.offer_type = company.offer_type
+        stu_offer.username = student.username
+        db.session.add(stu_offer)
+        db.session.commit()
+        print('student offer database updated')
     return render_template('student_company_reg_success.html', user_name=user_name, company_name=company.company_name)
 
 
@@ -663,12 +676,7 @@ def student_company_view():
         users = Company.query.order_by(Company.company_name.desc())
         # users = Company.query.order_by(desc(Company.ctc))
         user_name = current_profile()
-        # existing_list = list()
-        # student = Student_info.query.filter_by(username=logged_in_user[0]).first()
-        #
-        # stu_comp_reg = Student_company_registration.query.filter_by(sid=student.sid).all()
-        # for item in stu_comp_reg:
-        #     existing_list.append(item.cno)
+
 
     # print(users)
 
@@ -732,20 +740,7 @@ def student_filter():
                         if item.sid == stu.sid:
                             student_list.add(stu)
 
-                # q = final_query.join(stu_com, final_query.sid == stu_com.sid)
-                # print(q)
-                # for item in stu_com:
 
-                    # final_query = final_query.filter(Student_info.sid == item.sid)
-
-            # if len(form.cno.data) != 0 and len(query_filter) == 0:
-            #     company = Company.query.filter_by(cno=form.cno.data).first()
-            #     registered_stu = Student_company_registration.query.filter_by(cno=form.cno.data)
-            #
-            #     for item in registered_stu:
-            #         student = Student_info.query.filter_by(sid=item.sid).first()
-            #         student_list.add(student)
-            #     query_filter = student_list
             if flag_comp:
                 print(f"Final Query for students{final_query.all()}")
                 query_filter = final_query.all()
@@ -917,26 +912,60 @@ def admin_company_viewer(company_id):
     return render_template('admin_company_reg_students.html', company=company, student_list=student_list, registered_stu=registered_stu, user_name=user_name)
 
 
-@app.route('/dashboard_admin/admin_company_view/admin_offer_view/<company_id>')
+@app.route('/dashboard_admin/admin_company_view/admin_offer_view/<company_id>', methods=['GET', 'POST'])
 @login_required
 def admin_offer_view(company_id):
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if not user.admin:
         return redirect(url_for('logout'))
     else:
-        print('Admin company registered students view')
+        print('Admin registered student offers view')
         user_name = current_profile()
         company = Company.query.filter_by(cno=company_id).first()
 
-        registered_stu = Student_company_registration.query.filter_by(cno=company_id)
+        registered_stu = OfferDetails.query.filter_by(cno=company_id)
+        print(registered_stu)
         student_list = list()
         for item in registered_stu:
             student = Student_info.query.filter_by(sid=item.sid).first()
-            student_list.append(student)
+            student_list.append([student, item])
         print(student_list)
+        # offer_stu = OfferDetails.query.filter_by
 
 
     return render_template('admin_offer_view.html', company=company, student_list=student_list, registered_stu=registered_stu, user_name=user_name)
+
+
+@app.route('/dashboard_admin/admin_company_view/admin_offer_view/offered/<company_id>/<sid>/<button_press>', methods=['POST', 'GET'])
+@login_required
+def offered(company_id, sid, button_press):
+    print('Offered function')
+
+    # sid = request.args.get('sid')
+    # company_id = request.args.get('company_id')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    print(f'sid: {sid}')
+    print(f'Company_id: {company_id}')
+    print(f'Pressed Button: {button_press}')
+    if not user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Offered else section')
+        user_name = current_profile()
+        student = Student_info.query.filter_by(sid=sid).first()
+        student_offer = OfferDetails.query.filter_by(cno=company_id, sid=sid).first()
+        if button_press == 'Offer':
+            student_offer.offered = True
+            db.session.add(student_offer)
+            db.session.commit()
+            print('Offer committed')
+        elif button_press == 'Revoke':
+            student_offer.revoked = True
+            db.session.add(student_offer)
+            db.session.commit()
+            print('Revoke committed')
+
+    return redirect(url_for('admin_offer_view', company_id=company_id))
 
 
 @app.route('/dashboard_admin/admin_company_view/admin_student_viewer/<sid>')
