@@ -968,6 +968,17 @@ def offered(company_id, sid, button_press):
     return redirect(url_for('admin_offer_view', company_id=company_id))
 
 
+@app.route('/dashboard_student/student_offers')
+@login_required
+def student_offer():
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        student = Student_info.query.filter_by(username=user.username)
+        stu_offers = OfferDetails.query.filter_by(sid=student.sid)
+        return render_template('student_offer_page.html', student=student)
+
 @app.route('/dashboard_admin/admin_company_view/admin_student_viewer/<sid>')
 @login_required
 def admin_student_viewer(sid):

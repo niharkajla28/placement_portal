@@ -65,6 +65,11 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>View Companies</span></a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{url_for('student_offer')}}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Offers</span></a>
+            </li>
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
 <!--                <a class="nav-link collapsed" href="{{url_for('student_profile')}}" data-toggle="collapse" data-target="#collapseTwo"-->
@@ -378,38 +383,35 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Offers Acceptance</h1>
+                    </div>
+
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        {% if already_registered_flag == False %}
-                            {% if company.active_reg == True %}
-                                {% if (company.cgpa <= student.cgpa) and (company.marks_10 <= student.marks_10) and (company.marks_12 <= student.marks_12) and (company.backlogs >= student.backlogs)  %}
-                                    {% if student.special_dept in eligible %}
+                        <h1 class="h3 mb-0 text-gray-800">Offers</h1>
 
-                                        {% if student.red_flag < 3 %}
-                                            <a href="{{url_for('student_company_registered', company_id=company.cno)}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                            <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                                             <i class="fas fa-building-o fa-sm text-white-50"></i>Register</a>
-                                        {% else %}
+
                                             <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                             <i class="fas fa-ban text-white-50"></i>Red Flag exhausted</a>
-                                        {% endif %}
-                                    {% else %}
+
+
                                         <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                         <i class="fas fa-ban text-white-50"></i> Not eligible</a>
-                                    {% endif %}
-                                {% else %}
+
+
                                     <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                         <i class="fas fa-ban text-white-50"></i> Not eligible</a>
-                                {% endif %}
-                            {% else %}
+
                                 <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">
                                         <i class="fas fa-ban text-white-50"></i>Registrations not open</a>
-                            {% endif %}
-                        {% else %}
+
                             <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
                                 <i class="fas fa-check text-white-50"></i>Already registered</a>
-                        {% endif %}
+
                     </div>
 
                     <!-- Content Row -->
@@ -423,286 +425,16 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Company: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.company_name}}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Company Name</div>
                                         </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Website: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.website_link}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Minimum CGPA: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.cgpa}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Minimum 10th Marks: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.marks_10}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Minimum 12th Marks: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.marks_12}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Maximum backlogs allowed: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.backlogs}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                CTC: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.ctc}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Offer Type: </div>
-                                            {% if company.offer_type == 'P' %}
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Placement</div>
-                                                {% elif company.offer_type == 'I' %}
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Internship</div>
-                                                {% elif company.offer_type == 'P+I' %}
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Placement + Internship</div>
-                                                {% endif %}
-
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Stipend: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.stipend}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Location: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.location}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Job Start Date: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{company.start_date}}</div>
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                PPO: </div>
-                                            {% if company.ppo == True %}
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">Yes</div>
-                                            {% else %}
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">No</div>
-                                            {% endif %}
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-danger shadow h-100 py-2">
-                                <div class="card-body ">
-                                    <div class="row no-gutters align-items-center ">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Last Date to register: </div>
-                                                <div class="h5 mb-0 font-weight-bold text-red-800">{{company.last_date}}</div>
-
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-5 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body ">
-                                    <div class="row no-gutters align-items-center ">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Eligible branch: </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-red-800">{{company.eligible_branch}}</div>
-
-
-                                        </div>
-<!--                                        <div class="col-auto">-->
-<!--                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>-->
-<!--                                        </div>-->
+                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                            <i class="fas fa-check text-white-50"></i>Already registered</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
 
