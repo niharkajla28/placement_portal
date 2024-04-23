@@ -415,7 +415,14 @@ def dashboard_student():
         return redirect(url_for('logout'))
     else:
         user_name = current_profile()
-        return render_template('dashboard_student.html', user_name=user_name)
+        company_count = Company.query.count()
+        company_active = Company.query.filter_by(active_reg=True).count()
+        company_deactive = Company.query.filter_by(active_reg=False).count()
+        print(company_count)
+        print(company_active)
+        print(company_deactive)
+        return render_template('dashboard_student.html', user_name=user_name, company_count=company_count,
+                               company_active=company_active, company_deactive=company_deactive)
 
 
 @app.route('/dashboard_student/student_profile', methods=['GET', 'POST'])
@@ -488,7 +495,19 @@ def dashboard_admin():
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if user.admin:
         user_name = current_profile()
-        return render_template('dashboard_admin.html', user_name=user_name)
+        company_count = Company.query.count()
+        company_active = Company.query.filter_by(active_reg=True).count()
+        company_deactive = Company.query.filter_by(active_reg=False).count()
+        print(company_count)
+        print(company_active)
+        print(company_deactive)
+        offer_count = OfferDetails.query.filter_by(offered=True).count()
+        accept_count = OfferDetails.query.filter_by(accepted=True).count()
+        reject_count = OfferDetails.query.filter_by(rejected=True).count()
+        revoke_count = OfferDetails.query.filter_by(revoked=True).count()
+        return render_template('dashboard_admin.html', user_name=user_name, company_count=company_count,
+                               company_active=company_active, company_deactive=company_deactive, offer_count=offer_count,
+                               accept_count=accept_count, reject_count=reject_count, revoke_count=revoke_count)
     else:
         return redirect(url_for('logout'))
 
