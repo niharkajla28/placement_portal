@@ -392,31 +392,18 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Offers</h1>
 
-                                            <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                                            <i class="fas fa-building-o fa-sm text-white-50"></i>Register</a>
-
-                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
-                                            <i class="fas fa-ban text-white-50"></i>Red Flag exhausted</a>
 
 
-                                        <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
-                                        <i class="fas fa-ban text-white-50"></i> Not eligible</a>
 
 
-                                    <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
-                                        <i class="fas fa-ban text-white-50"></i> Not eligible</a>
 
-                                <a  class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm">
-                                        <i class="fas fa-ban text-white-50"></i>Registrations not open</a>
 
-                            <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
-                                <i class="fas fa-check text-white-50"></i>Already registered</a>
 
                     </div>
 
                     <!-- Content Row -->
                     <div class="row">
-
+                        {% for offer, company in company_list %}
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-5 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
@@ -425,15 +412,49 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Company: </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Company Name</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ company.company_name }}</div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Offer Type: </div>
+                                            {% if company.offer_type == 'P' %}
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Placement</div>
+                                            {% elif company.offer_type == 'I' %}
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Internship</div>
+                                            {% elif company.offer_type == 'P+I' %}
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Placement + Internship</div>
+                                            {% endif %}
                                         </div>
-                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
-                                            <i class="fas fa-check text-white-50"></i>Already registered</a>
+                                        {% if offer.offered==False and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                                            <i class="fas text-white-50"></i>No Offers yet</a>
+                                                        {% elif offer.offered==True and offer.accepted==False and offer.rejected==False and offer.revoked==False %}
+                                                                <a class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
+                                                                <i class="fas text-white-50"></i>Offered</a>
+
+                                                                <a href="{{url_for('acceptance', company_id=company.cno, sid=offer.sid, button_press='Accept')}}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                                                <i class="fas text-white-50"></i>Accept Offer</a>
+                                                                <div class="my-2"></div>
+                                                                <a href="{{url_for('acceptance', company_id=company.cno, sid=offer.sid, button_press='Reject')}}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                                <i class="fas text-white-50"></i>Reject Offer</a>
+                                                        {% elif offer.offered==True and offer.accepted==True and offer.rejected==False and offer.revoked==False %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                                            <i class="fas text-white-50"></i>Offer Accepted by you</a>
+
+                                                        {% elif offer.offered==True and offer.accepted==False and offer.rejected==True and offer.revoked==False %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                            <i class="fas text-white-50"></i>Offer Rejected by you</a>
+                                                        {% elif offer.revoked==True %}
+                                                            <a  class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                                                            <i class="fas text-white-50"></i>Offer Revoked by Admin</a>
+                                                        {% else %}
+                                                            Contact System Admin
+                                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
+
                 </div>
             </div>
             <!-- End of Main Content -->

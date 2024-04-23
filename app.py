@@ -968,16 +968,58 @@ def offered(company_id, sid, button_press):
     return redirect(url_for('admin_offer_view', company_id=company_id))
 
 
-@app.route('/dashboard_student/student_offers')
+@app.route('/dashboard_student/student_offers', methods=['POST', 'GET'])
 @login_required
 def student_offer():
     user = User.query.filter_by(username=logged_in_user[0]).first()
     if user.admin:
         return redirect(url_for('logout'))
     else:
-        student = Student_info.query.filter_by(username=user.username)
+        student = Student_info.query.filter_by(username=user.username).first()
+        print(student)
         stu_offers = OfferDetails.query.filter_by(sid=student.sid)
-        return render_template('student_offer_page.html', student=student)
+        company_list = list()
+        for stu in stu_offers:
+
+            company = Company.query.filter_by(cno=stu.cno).first()
+            company_list.append([stu, company])
+        print(company_list)
+        return render_template('student_offer_page.html', student=student, company_list=company_list)
+
+
+@app.route('/dashboard_student/student_offer/acceptance/<company_id>/<sid>/<button_press>', methods=['POST', 'GET'])
+@login_required
+def acceptance(company_id, sid, button_press):
+    print('Acceptance function')
+
+    # sid = request.args.get('sid')
+    # company_id = request.args.get('company_id')
+    user = User.query.filter_by(username=logged_in_user[0]).first()
+    print(f'sid: {sid}')
+    print(f'Company_id: {company_id}')
+    print(f'Pressed Button: {button_press}')
+    if user.admin:
+        return redirect(url_for('logout'))
+    else:
+        print('Acceptance else section')
+        user_name = current_profile()
+        # student = Student_info.query.filter_by(sid=sid).first()
+        student_acceptance = OfferDetails.query.filter_by(cno=company_id, sid=sid).first()
+        if button_press == 'Accept':
+            student_acceptance.accepted = True
+            db.session.add(student_acceptance)
+            db.session.commit()
+            print('Accept committed')
+        elif button_press == 'Reject':
+            student_acceptance.rejected = True
+            db.session.add(student_acceptance)
+            db.session.commit()
+            print('Reject committed')
+
+    return redirect(url_for('student_offer'))
+
+
+
 
 @app.route('/dashboard_admin/admin_company_view/admin_student_viewer/<sid>')
 @login_required
