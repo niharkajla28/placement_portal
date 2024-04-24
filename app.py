@@ -631,21 +631,27 @@ def student_company_registered(company_id):
         user_name = current_profile()
         company = Company.query.filter_by(cno=company_id).first()
         student = Student_info.query.filter_by(username=logged_in_user[0]).first()
-        stu_comp_reg = Student_company_registration()
-        stu_comp_reg.sid = student.sid
-        stu_comp_reg.cno = company.cno
-        stu_comp_reg.active_reg = True
-        db.session.add(stu_comp_reg)
-        db.session.commit()
-        print('student company registration database updated')
-        stu_offer = OfferDetails()
-        stu_offer.cno = company.cno
-        stu_offer.sid = student.sid
-        stu_offer.offer_type = company.offer_type
-        stu_offer.username = student.username
-        db.session.add(stu_offer)
-        db.session.commit()
-        print('student offer database updated')
+        duplicate_check_stu_com_reg = Student_company_registration.query.filter_by(sid=student.sid, cno=company_id).first()
+        print(duplicate_check_stu_com_reg)
+        if duplicate_check_stu_com_reg is None:
+            stu_comp_reg = Student_company_registration()
+            stu_comp_reg.sid = student.sid
+            stu_comp_reg.cno = company.cno
+            stu_comp_reg.active_reg = True
+            db.session.add(stu_comp_reg)
+            db.session.commit()
+            print('student company registration database updated')
+        duplicate_check_offer = OfferDetails.query.filter_by(sid=student.sid, cno=company_id).first()
+        print(duplicate_check_offer)
+        if duplicate_check_offer is None:
+            stu_offer = OfferDetails()
+            stu_offer.cno = company.cno
+            stu_offer.sid = student.sid
+            stu_offer.offer_type = company.offer_type
+            stu_offer.username = student.username
+            db.session.add(stu_offer)
+            db.session.commit()
+            print('student offer database updated')
     return render_template('student_company_reg_success.html', user_name=user_name, company_name=company.company_name)
 
 
@@ -1005,7 +1011,8 @@ def student_offer():
             company = Company.query.filter_by(cno=stu.cno).first()
             company_list.append([stu, company])
         print(company_list)
-        return render_template('student_offer_page.html', student=student, company_list=company_list)
+        return render_template('student_offer_page.html', user_name=student.name, student=student,
+                               company_list=company_list)
 
 
 @app.route('/dashboard_student/student_offer/acceptance/<company_id>/<sid>/<button_press>', methods=['POST', 'GET'])
@@ -1247,6 +1254,13 @@ def logout():
 @app.route('/test', methods=['GET', 'POST'])
 def test():
     return render_template('test.html')
+
+
+@app.errorhandler(404)
+
+def not_found(e):
+
+    return render_template("404.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
