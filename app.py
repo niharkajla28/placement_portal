@@ -506,10 +506,11 @@ def dashboard_admin():
         reject_count = OfferDetails.query.filter_by(rejected=True).count()
         revoke_count = OfferDetails.query.filter_by(revoked=True).count()
         total_students = Student_info.query.count()
+        per = round(((offer_count-accept_count-reject_count-revoke_count)*100)/offer_count)
         return render_template('dashboard_admin.html', user_name=user_name, company_count=company_count,
                                company_active=company_active, company_deactive=company_deactive, offer_count=offer_count,
                                accept_count=accept_count, reject_count=reject_count, revoke_count=revoke_count,
-                               total_students=total_students)
+                               total_students=total_students, per=per)
     else:
         return redirect(url_for('logout'))
 
